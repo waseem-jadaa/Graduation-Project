@@ -20,6 +20,7 @@ if (!isset($user_name)) {
     }
 }
 ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <header class="dashboard-header">
       <div class="container">
         <nav>
@@ -42,6 +43,9 @@ if (!isset($user_name)) {
               <img src="image\p.png" alt="صورة المستخدم">
               <span><?php echo $user_name; ?></span>
               <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="logout-icon" style="cursor: pointer; margin-left: 20px;">
+              <i class="fas fa-sign-out-alt" onclick="location.href='main.php'"></i>
             </div>
           </div>
         </nav>

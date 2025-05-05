@@ -11,11 +11,10 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // get data professionals from db
-    $stmt = $conn->prepare("SELECT user.User_ID, user.name, profile.first_name, profile.last_name, profile.bio, profile.location, profile.experience 
+    $stmt = $conn->prepare("SELECT user.User_ID, user.name, profile.bio, profile.location, profile.experience, profile.id_photo 
 FROM user 
 INNER JOIN profile ON user.User_ID = profile.User_ID 
-WHERE user.role = 'job_seeker'
-");
+WHERE user.account_type = 'job seeker'");
     $stmt->execute();
 
     $professionals = $stmt->fetchAll(PDO::FETCH_ASSOC);

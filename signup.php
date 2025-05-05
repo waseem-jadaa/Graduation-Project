@@ -27,7 +27,14 @@
           <h1 class="signup-title">ابدأ رحلتك مع <span>FursaPal</span></h1>
           <p class="signup-subtitle">اختر نوع الحساب الذي يناسبك</p>
 
-          <div class="account-type-selector">
+
+        <form
+          class="signup-form"
+          action=""
+          method="POST"
+          enctype="multipart/form-data"
+        >
+         <div class="account-type-selector">
             <input
               type="radio"
               name="account_type"
@@ -55,13 +62,6 @@
           </div>
         </div>
 
-        <form
-          class="signup-form"
-          action=""
-          method="POST"
-          enctype="multipart/form-data"
-        >
-         
           <div class="form-section">
             <h2 class="section-title">المعلومات الأساسية</h2>
             <div class="form-grid">
@@ -255,7 +255,26 @@
 
     
     <script>
-      
+      function updateRequiredFields(accountType) {
+  const workerFields = document.querySelectorAll("#worker-fields input");
+  const employerFields = document.querySelectorAll("#employer-fields input");
+
+  if (accountType === "worker") {
+    workerFields.forEach((input) => input.required = true);
+    employerFields.forEach((input) => input.required = false);
+  } else {
+    workerFields.forEach((input) => input.required = false);
+    employerFields.forEach((input) => {
+      // اجعل كل الحقول مطلوبة باستثناء الرخصة التجارية
+      if (input.id !== "commercial_license") {
+        input.required = true;
+      } else {
+        input.required = false;
+      }
+     });
+  }
+}
+
       document.querySelectorAll(".account-type-selector input").forEach((radio) => {
         radio.addEventListener("change", function () {
           
@@ -283,6 +302,7 @@
             document.getElementById("worker-fields").style.display = "none";
             document.getElementById("employer-fields").style.display = "block";
           }
+          updateRequiredFields(this.value);
         });
       });
 
@@ -325,6 +345,8 @@
 
       
       window.addEventListener('load', function() {
+        const selectedAccountType = document.querySelector(".account-type-selector input:checked").value;
+        updateRequiredFields(selectedAccountType);
         const fileInput = document.getElementById('id_photo');
         const previewContainer = document.getElementById('id-photo-preview');
         const previewImage = previewContainer.querySelector('img');
@@ -377,17 +399,31 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include 'db.php';
 
+    // Add error logging to capture issues during database operations
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+
+    // Replace die() with user-friendly error messages and logging
+    function handleError($message) {
+        error_log($message);
+        echo "<script>alert('حدث خطأ: $message');</script>";
+        exit();
+    }
+
+    // Debugging: Log the contents of the POST request
+    error_log("Form submission data: " . print_r($_POST, true));
+
     if (!isset($_POST['account_type'])) {
-        die('نوع الحساب مطلوب.');
+        handleError('نوع الحساب مطلوب.');
     }
 
     if (!isset($_POST['terms']) || $_POST['terms'] !== 'on') {
-        die('يجب الموافقة على الشروط والأحكام.');
+        handleError('يجب الموافقة على الشروط والأحكام.');
     }
 
     $accountType = $_POST['account_type'];
     if ($accountType !== 'worker' && $accountType !== 'employer') {
-        die('نوع حساب غير صالح.');
+        handleError('نوع حساب غير صالح.');
     }
 
     // Validate required fields
@@ -400,13 +436,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($requiredFields as $field) {
         if (!isset($_POST[$field]) || empty($_POST[$field])) {
-            die("الحقل {$field} مطلوب.");
+            handleError("الحقل {$field} مطلوب.");
         }
     }
 
     // Validate password match
     if ($_POST['password'] !== $_POST['confirm_password']) {
-        die('كلمات المرور غير متطابقة.');
+        handleError('كلمات المرور غير متطابقة.');
     }
 
     // Basic data
@@ -419,23 +455,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->beginTransaction();
 
         // Check if email already exists
-        $checkEmail = $conn->prepare("SELECT User_ID FROM user WHERE email = :email");
-        $checkEmail->execute([':email' => $email]);
-        if ($checkEmail->fetch()) {
-            die('البريد الإلكتروني مسجل مسبقاً.');
+        try {
+            $checkEmail = $conn->prepare("SELECT User_ID FROM user WHERE email = :email");
+            $checkEmail->execute([':email' => $email]);
+            if ($checkEmail->fetch()) {
+                handleError('البريد الإلكتروني مسجل مسبقاً.');
+            }
+        } catch (PDOException $e) {
+            handleError("Database Error: " . $e->getMessage());
         }
 
-        // Insert into user table
-        $sqlUser = "INSERT INTO user (name, email, password, role) VALUES (:name, :email, :password, :role)";
-        $stmtUser = $conn->prepare($sqlUser);
-        $stmtUser->execute([
-            ':name' => $name,
-            ':email' => $email,
-            ':password' => $password,
-            ':role' => $role
-        ]);
-        
-        $userId = $conn->lastInsertId();
+        // Enhanced debugging for database operations
+        function logDebug($message) {
+            error_log("DEBUG: " . $message);
+        }
+
+        // Log database operations
+        logDebug("Attempting to insert into user table with data: Name=$name, Email=$email, Role=$role");
+
+        try {
+            $sqlUser = "INSERT INTO user (name, email, password, role) VALUES (:name, :email, :password, :role)";
+            $stmtUser = $conn->prepare($sqlUser);
+            $stmtUser->execute([
+                ':name' => $name,
+                ':email' => $email,
+                ':password' => $password,
+                ':role' => $role
+            ]);
+            $userId = $conn->lastInsertId();
+            logDebug("User inserted successfully with ID: $userId");
+        } catch (PDOException $e) {
+            logDebug("Error inserting into user table: " . $e->getMessage());
+            handleError("Database Error: " . $e->getMessage());
+        }
 
         // Handle ID photo upload
         $idPhotoPath = null;
@@ -454,57 +506,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $firstName = $nameParts[0];
         $lastName = isset($nameParts[1]) ? implode(' ', array_slice($nameParts, 1)) : '';
 
-        if ($accountType === 'worker') {
-            // Job seeker profile
-            $profession = $_POST['profession'];
-            $skills = $_POST['skills'];
-            $experience = $_POST['experience'];
+        // Log profile insertion
+        logDebug("Attempting to insert into profile table for User ID: $userId");
 
-            $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo) 
-                          VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo)";
-            $stmtProfile = $conn->prepare($sqlProfile);
-            $stmtProfile->execute([
-                ':user_id' => $userId,
-                ':first_name' => $firstName,
-                ':last_name' => $lastName,
-                ':bio' => $profession,
-                ':skills' => $skills,
-                ':location' => '',
-                ':experience' => $experience,
-                ':id_photo' => $idPhotoPath
-            ]);
+        try {
+            if ($accountType === 'worker') {
+                logDebug("Inserting worker profile with Profession=$profession, Skills=$skills, Experience=$experience");
+                // Job seeker profile
+                $profession = $_POST['profession'];
+                $skills = $_POST['skills'];
+                $experience = $_POST['experience'];
 
-        } else {
-            // Employer profile
-            $companyName = $_POST['company_name'];
-            $companyField = $_POST['company_field'];
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo)";
+                $stmtProfile = $conn->prepare($sqlProfile);
+                $stmtProfile->execute([
+                    ':user_id' => $userId,
+                    ':first_name' => $firstName,
+                    ':last_name' => $lastName,
+                    ':bio' => $profession,
+                    ':skills' => $skills,
+                    ':location' => '',
+                    ':experience' => $experience,
+                    ':id_photo' => $idPhotoPath
+                ]);
+                logDebug("Worker profile inserted successfully");
+            } else {
+                logDebug("Inserting employer profile with Company Name=$companyName, Company Field=$companyField");
+                // Employer profile
+                $companyName = $_POST['company_name'];
+                $companyField = $_POST['company_field'];
 
-            // Handle commercial license upload
-            $licensePath = null;
-            if (isset($_FILES['commercial_license']) && $_FILES['commercial_license']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'uploads/licenses/';
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
+                // Handle commercial license upload
+                $licensePath = null;
+                if (isset($_FILES['commercial_license']) && $_FILES['commercial_license']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = 'uploads/licenses/';
+                    if (!file_exists($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    $fileExtension = pathinfo($_FILES['commercial_license']['name'], PATHINFO_EXTENSION);
+                    $licensePath = $uploadDir . $userId . '_license.' . $fileExtension;
+                    move_uploaded_file($_FILES['commercial_license']['tmp_name'], $licensePath);
                 }
-                $fileExtension = pathinfo($_FILES['commercial_license']['name'], PATHINFO_EXTENSION);
-                $licensePath = $uploadDir . $userId . '_license.' . $fileExtension;
-                move_uploaded_file($_FILES['commercial_license']['tmp_name'], $licensePath);
-            }
 
-            $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, commercial_license) 
-                          VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :license)";
-            $stmtProfile = $conn->prepare($sqlProfile);
-            $stmtProfile->execute([
-                ':user_id' => $userId,
-                ':first_name' => $firstName,
-                ':last_name' => $lastName,
-                ':bio' => $companyName . ' - ' . $companyField,
-                ':skills' => '',
-                ':location' => '',
-                ':experience' => '0',
-                ':id_photo' => $idPhotoPath,
-                ':license' => $licensePath
-            ]);
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, commercial_license) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :license)";
+                $stmtProfile = $conn->prepare($sqlProfile);
+                $stmtProfile->execute([
+                    ':user_id' => $userId,
+                    ':first_name' => $firstName,
+                    ':last_name' => $lastName,
+                    ':bio' => $companyName . ' - ' . $companyField,
+                    ':skills' => '',
+                    ':location' => '',
+                    ':experience' => '0',
+                    ':id_photo' => $idPhotoPath,
+                    ':license' => $licensePath
+                ]);
+                logDebug("Employer profile inserted successfully");
+            }
+        } catch (PDOException $e) {
+            logDebug("Error inserting into profile table: " . $e->getMessage());
+            handleError("Database Error: " . $e->getMessage());
         }
 
         $conn->commit();
@@ -515,14 +578,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_name'] = $name;
         $_SESSION['user_role'] = $role;
 
-        // Redirect to main page
-        header('Location: main.php');
+        // Redirect to main page using JavaScript
+        echo "<script>alert('تم إنشاء الحساب بنجاح!'); window.location.href = 'login.php';</script>";
         exit();
 
     } catch (PDOException $e) {
         $conn->rollBack();
         error_log("Database Error: " . $e->getMessage());
-        die("حدث خطأ أثناء إنشاء الحساب. الرجاء المحاولة مرة أخرى لاحقاً.");
+        handleError("حدث خطأ أثناء إنشاء الحساب. الرجاء المحاولة مرة أخرى لاحقاً.");
     }
 }
 ?>

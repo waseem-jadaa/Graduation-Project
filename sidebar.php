@@ -14,10 +14,6 @@
       <a href="professionals.php"><span>المهنييون</span></a>
     </div>
     <div class="menu-item">
-      <i class="fas fa-envelope"></i>
-      <a href="messages.php"><span>الرسائل</span></a>
-    </div>
-    <div class="menu-item">
       <i class="fas fa-chart-line"></i>
       <a href="stats.php"><span>الإحصائيات</span></a>
     </div>

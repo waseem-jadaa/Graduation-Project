@@ -34,35 +34,9 @@ try {
 
   <body class="dashboard-page">
     
-    <header class="dashboard-header">
-      <div class="container">
-        <nav>
-          <div class="logo">
-            <i class="fas fa-handshake"></i>
-            <span>Fursa<span style="color: var(--primary);">Pal</span></span>
-          </div>
-          
-          <div class="search-bar">
-            <input type="text" placeholder="ابحث عن وظائف أو مهنيين...">
-            <button><i class="fas fa-search"></i></button>
-          </div>
-          
-          <div class="user-actions">
-            <div class="notification-bell">
-              <i class="fas fa-bell"></i>
-              <span class="notification-count">3</span>
-            </div>
-            <div class="user-profile">
-              <img src="image/P.png" alt="صورة المستخدم">
-              <span><?php echo $user_name; ?></span>
-              <i class="fas fa-chevron-down"></i>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </header>
+   
 
-    
+    <?php include 'headerDash.php'; ?>
     <?php include 'sidebar.php'; ?>
 
     
@@ -119,94 +93,47 @@ try {
           </div>
         </section>
 
+        <?php
+        // Fetch suggested jobs from the database
+        $suggested_jobs = [];
+        try {
+            $stmt = $conn->prepare('SELECT * FROM job ORDER BY RAND() LIMIT 3');
+            $stmt->execute();
+            $suggested_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo '<p>حدث خطأ أثناء جلب الوظائف المقترحة.</p>';
+        }
+        ?>
+
         <section class="suggested-jobs">
           <div class="section-header">
             <h2>وظائف مقترحة لك</h2>
             <a href="#" class="view-all">عرض الكل</a>
           </div>
-          
+
           <div class="jobs-grid">
-            <div class="job-card">
-              <div class="job-header">
-                <img src="image/n.png" alt="شعار الشركة" class="company-logo">
-                <div class="job-title">
-                  <h3>نجار</h3>
-                  <p>منجرة الأمانة</p>
+            <?php foreach ($suggested_jobs as $job): ?>
+              <div class="job-card">
+                <div class="job-header">
+                  <img src="image/n.png" alt="شعار الشركة" class="company-logo">
+                  <div class="job-title">
+                    <h3><?php echo htmlspecialchars($job['title']); ?></h3>
+                    <p><?php echo htmlspecialchars($job['description']); ?></p>
+                  </div>
+                  <div class="job-save">
+                    <i class="far fa-bookmark"></i>
+                  </div>
                 </div>
-                <div class="job-save">
-                  <i class="far fa-bookmark"></i>
+                <div class="job-details">
+                  <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($job['location']); ?></p>
+                  <p><i class="fas fa-money-bill-wave"></i> <?php echo htmlspecialchars($job['salary']); ?></p>
                 </div>
-              </div>
-              <div class="job-details">
-                <p><i class="fas fa-map-marker-alt"></i> رام الله</p>
-                <p><i class="fas fa-clock"></i> دوام كامل</p>
-                <p><i class="fas fa-money-bill-wave"></i> $1,500 - $2,000</p>
-              </div>
-              <div class="job-skills">
-                <span>تصميم غرف نوم </span>
-                <span>ابواب مميزة</span>
-                <span>مطابخ بتصاميم فاخرة </span>
-              </div>
-              <div class="job-actions">
-                <button class="btn-apply">تقدم الآن</button>
-                <button class="btn-details">التفاصيل</button>
-              </div>
-            </div>
-            
-            <div class="job-card featured">
-              <div class="featured-badge">مميز</div>
-              <div class="job-header">
-                <img src="image/d.avif" alt="شعار الشركة" class="company-logo">
-                <div class="job-title">
-                  <h3>دهان</h3>
-                  <p>جميع انواع الدهانات وتصاميم الجبص</p>
-                </div>
-                <div class="job-save">
-                  <i class="fas fa-bookmark"></i>
+                <div class="job-actions">
+                  <button class="btn-apply">تقدم الآن</button>
+                  <button class="btn-details">التفاصيل</button>
                 </div>
               </div>
-              <div class="job-details">
-                <p><i class="fas fa-map-marker-alt"></i> نابلس</p>
-                <p><i class="fas fa-clock"></i> دوام جزئي</p>
-                <p><i class="fas fa-money-bill-wave"></i> $800 - $1,200</p>
-              </div>
-              <div class="job-skills">
-                <span>دهان فيكتوري</span>
-                <span>نصميم جبص باشكال ايطالية</span>
-                <span>تفنيش العمل بكفاءة عالية ونظافة </span>
-              </div>
-              <div class="job-actions">
-                <button class="btn-apply">تقدم الآن</button>
-                <button class="btn-details">التفاصيل</button>
-              </div>
-            </div>
-            
-            <div class="job-card">
-              <div class="job-header">
-                <img src="image/a.webp" alt="شعار الشركة" class="company-logo">
-                <div class="job-title">
-                  <h3>المنيوم</h3>
-                  <p>شركة الامل للالمنيوم</p>
-                </div>
-                <div class="job-save">
-                  <i class="far fa-bookmark"></i>
-                </div>
-              </div>
-              <div class="job-details">
-                <p><i class="fas fa-map-marker-alt"></i> الخليل</p>
-                <p><i class="fas fa-clock"></i> دوام كامل</p>
-                <p><i class="fas fa-money-bill-wave"></i> $1,800 - $2,500</p>
-              </div>
-              <div class="job-skills">
-                <span>شبابيك + ابواب</span>
-                <span>تركيب مطورات </span>
-                <span>باب كهربائي </span>
-              </div>
-              <div class="job-actions">
-                <button class="btn-apply">تقدم الآن</button>
-                <button class="btn-details">التفاصيل</button>
-              </div>
-            </div>
+            <?php endforeach; ?>
           </div>
         </section>
 
