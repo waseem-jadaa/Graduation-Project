@@ -47,7 +47,6 @@ if (!isset($_SESSION['user_id'])) {
         <div class="container">
             <h1>الوظائف المتاحة</h1>
             <div id="jobs-container" class="jobs-container">
-                <!-- Job boxes will be dynamically loaded here -->
             </div>
         </div>
     </main>

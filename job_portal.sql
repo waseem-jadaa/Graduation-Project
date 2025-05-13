@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3308
--- Generation Time: Apr 30, 2025 at 10:17 PM
+-- Generation Time: May 14, 2025 at 12:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,7 +59,8 @@ INSERT INTO `job` (`job_ID`, `employer_ID`, `title`, `description`, `location`, 
 (6, 9, 'موسرجي', 'ان يكون قادر على عمل خط رئيسي للمنزل ', 'رام الله', 1500.00),
 (7, 9, 'تركيب كرميد ', 'ان يكون لديه خبرة في جميع انواع الكرميد ', 'حبلة', 250.00),
 (12, 9, 'بستاني ', 'المطلوب شخص لديه خبرة وذوق رفيق في البساتين بعدة انماطها ', 'المصيون', 4000.00),
-(13, 9, 'عامل بناء ', 'ان يكون لديه خبرة متنوعة ', 'ياصيد', 1000.00);
+(13, 9, 'عامل بناء ', 'ان يكون لديه خبرة متنوعة ', 'ياصيد', 1000.00),
+(14, 9, 'شوفير تكسي ', 'امتلك رخصة عمومية وحاصل على شهادة حسن سلوك بامتياز \r\nالسير على خط نابلس - رام الله ', 'نابلس ', 3500.00);
 
 -- --------------------------------------------------------
 
@@ -136,16 +137,17 @@ CREATE TABLE `profile` (
   `location` varchar(255) DEFAULT NULL,
   `experience` text DEFAULT NULL,
   `id_photo` varchar(255) DEFAULT NULL,
-  `commercial_license` varchar(255) DEFAULT NULL
+  `profile_photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `profile`
 --
 
-INSERT INTO `profile` (`profile_ID`, `User_ID`, `first_name`, `last_name`, `bio`, `skills`, `location`, `experience`, `id_photo`, `commercial_license`) VALUES
-(1, 1, 'Ali', 'Ahmed', 'نجار', NULL, 'نابلس', '5 years', NULL, NULL),
-(2, 2, 'Sara', 'Khalid', 'تصميم ديكور', NULL, 'رام الله', '3 years', NULL, NULL);
+INSERT INTO `profile` (`profile_ID`, `User_ID`, `first_name`, `last_name`, `bio`, `skills`, `location`, `experience`, `id_photo`, `profile_photo`) VALUES
+(3, 12, 'mosab ', 'mashaqi', 'قصارة', 'فولخ , حجر', 'ياصيد', '5', 'uploads/id_photos/12_id.webp', NULL),
+(9, 18, '', '', '', '', '', '', 'uploads/id_photos/18_id.jpg', 'uploads/profile_photos/18_profile.jpg'),
+(10, 19, 'mayar', 'elyan', 'مصممة ازياء ', 'تصميم بدلات اعراس , تصميم ستايلات حديثة للجنسين ', 'جيوس', '8', 'uploads/id_photos/19_id.png', 'uploads/profile_photos/19_profile.webp');
 
 -- --------------------------------------------------------
 
@@ -186,9 +188,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`User_ID`, `name`, `email`, `password`, `role`) VALUES
-(1, 'Ali Ahmed', 'ali@example.com', '123456', 'job_seeker'),
-(2, 'Sara Khalid', 'sara@example.com', 'abcdef', 'job_seeker'),
-(9, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$/1AT5wb1gHObgtjxKyAxsOg4L4x48kkaI5.Z3ilTrOk3p0Erxyr9G', 'employer');
+(9, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$/1AT5wb1gHObgtjxKyAxsOg4L4x48kkaI5.Z3ilTrOk3p0Erxyr9G', 'employer'),
+(12, 'mosab mashaqi', 's12029151@stu.najah.edu', '$2y$10$dH3On4IRQ.bfKIRksuNRLuVutz2PlpxyMXKnE3r999MeQzQ/0Kd.G', 'job_seeker'),
+(18, 'Ayman Qadome', 'adnansleem370@gmail.com', '$2y$10$yInBhQ8WlFDWiHNf.LMVY.YHMtEArqe81CaAy2lRYA45/GarUeaqu', 'job_seeker'),
+(19, 'mayar elyan', 'mayarelyan2@gmail.com', '$2y$10$VqSZM1G6/RGevQJILWHUIuEgcEO8XD39DOEbzeBo025YiYK2bV/oS', 'job_seeker');
 
 -- --------------------------------------------------------
 
@@ -200,15 +203,6 @@ CREATE TABLE `user_skill` (
   `user_ID` int(11) NOT NULL,
   `skill_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user_skill`
---
-
-INSERT INTO `user_skill` (`user_ID`, `skill_ID`) VALUES
-(1, 1),
-(1, 2),
-(2, 3);
 
 --
 -- Indexes for dumped tables
@@ -305,7 +299,7 @@ ALTER TABLE `application`
 -- AUTO_INCREMENT for table `job`
 --
 ALTER TABLE `job`
-  MODIFY `job_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `job_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `keyword`
@@ -329,7 +323,7 @@ ALTER TABLE `notification`
 -- AUTO_INCREMENT for table `profile`
 --
 ALTER TABLE `profile`
-  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `skill`
@@ -341,7 +335,7 @@ ALTER TABLE `skill`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Constraints for dumped tables

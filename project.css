@@ -103,7 +103,6 @@ nav {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Hero Section */
 .hero {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
@@ -202,7 +201,6 @@ nav {
   color: var(--primary);
 }
 
-/* Stats Section */
 .stats {
   background-color: var(--light);
   padding: 5rem 0;
@@ -221,7 +219,6 @@ nav {
   margin-bottom: 0.5rem;
 }
 
-/* Testimonials Section */
 .testimonials {
   padding: 5rem 0;
 }
@@ -262,7 +259,6 @@ nav {
   color: #666;
 }
 
-/* CTA Section */
 .cta {
   background: linear-gradient(135deg, var(--accent) 0%, #ff8a50 100%);
   color: white;
@@ -907,7 +903,7 @@ footer {
   left: 0;
 }
 
-/* login by social account */
+/* login by social account --> check !!!!!! */ 
 .social-login {
   margin: 30px 0;
   text-align: center;
@@ -1510,7 +1506,7 @@ nav {
   color: #999;
   margin-top: 5px;
 }
-/* condition */
+
 .terms-agreement {
   display: flex;
   align-items: center;
@@ -1815,6 +1811,30 @@ nav {
   transform: rotate(180deg);
 }
 
+/* User Profile Menu */
+.user-profile-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    right: 0;
+    top: 100%;
+    z-index: 10;
+}
+.user-profile:hover .user-profile-menu {
+    display: block;
+}
+.user-profile-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+.user-profile-menu a:hover {
+    background: #f0f0f0;
+}
+
 /* sidebar */
 .sidebar {
     background: #f4f4f4; /* Changed to a quiet, light gray color */
@@ -1953,7 +1973,7 @@ nav {
 
 .main-content {
   flex: 1;
-  margin-right: 250px; /* Adjusted to ensure the content appears next to the sidebar */
+  margin-right: 250px; 
   padding: 20px;
 }
 
@@ -2211,7 +2231,6 @@ nav {
   background-color: rgba(45, 125, 70, 0.1);
 }
 
-/* خط الزمن للأنشطة */
 .activity-timeline {
   background-color: white;
   border-radius: 10px;
@@ -2489,5 +2508,56 @@ nav {
     background-color: #e64a19;
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Page */
+.profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: "Tajawal", sans-serif;
+}
+
+.profile-header {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}
+
+.profile-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 3px solid white;
+}
+
+.profile-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.profile-details {
+    padding: 2rem;
+    font-size: 1rem;
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+.profile-details p {
+    margin-bottom: 1rem;
+}
+
+.profile-details strong {
+    color: var(--primary);
 }
 

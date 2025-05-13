@@ -62,26 +62,35 @@
           </div>
         </div>
 
-          <div class="form-section">
+          <div class="form-section" style="padding: 20px;">
             <h2 class="section-title">المعلومات الأساسية</h2>
-            <div class="form-grid">
+            <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
               <div class="form-group floating-input">
-                <input type="text" id="fullname" name="fullname" required />
-                <label for="fullname">الاسم الكامل</label>
+                <input type="text" id="first_name" name="first_name" style="font-size: 0.9rem; padding: 0.5rem;" required />
+                <label for="first_name">الاسم الأول</label>
                 <i class="fas fa-user"></i>
               </div>
 
               <div class="form-group floating-input">
-                <input type="email" id="email" name="email" required />
-                <label for="email">البريد الإلكتروني</label>
-                <i class="fas fa-envelope"></i>
+                <input type="text" id="last_name" name="last_name" style="font-size: 0.9rem; padding: 0.5rem;" required />
+                <label for="last_name">اسم العائلة</label>
+                <i class="fas fa-user"></i>
               </div>
+            </div>
 
+            <div class="form-group floating-input">
+              <input type="email" id="email" name="email" style="font-size: 0.9rem; padding: 0.5rem;" required />
+              <label for="email">البريد الإلكتروني</label>
+              <i class="fas fa-envelope"></i>
+            </div>
+
+            <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
               <div class="form-group floating-input">
                 <input
                   type="password"
                   id="password"
                   name="password"
+                  style="font-size: 0.9rem; padding: 0.5rem;"
                   required
                   minlength="8"
                 />
@@ -97,6 +106,7 @@
                   type="password"
                   id="confirm_password"
                   name="confirm_password"
+                  style="font-size: 0.9rem; padding: 0.5rem;"
                   required
                 />
                 <label for="confirm_password">تأكيد كلمة المرور</label>
@@ -105,33 +115,37 @@
             </div>
           </div>
 
-        
-          <div class="form-section" id="worker-fields">
+          <div class="form-section" style="padding: 20px;">
             <h2 class="section-title">المعلومات المهنية</h2>
-            <div class="form-grid">
-              <div class="form-group floating-input">
-                <input type="text" id="profession" name="profession" required />
-                <label for="profession">المهنة</label>
-                <i class="fas fa-tools"></i>
-              </div>
+            <div class="form-group floating-input">
+              <input type="text" id="profession" name="profession" style="font-size: 0.9rem; padding: 0.5rem;" required />
+              <label for="profession">المهنة</label>
+              <i class="fas fa-tools"></i>
+            </div>
 
-              <div class="form-group floating-input">
-                <input type="text" id="skills" name="skills" required />
-                <label for="skills">المهارات (مفصولة بفواصل)</label>
-                <i class="fas fa-star"></i>
-              </div>
+            <div class="form-group floating-input">
+              <input type="text" id="skills" name="skills" style="font-size: 0.9rem; padding: 0.5rem;" required />
+              <label for="skills">المهارات (مفصولة بفواصل)</label>
+              <i class="fas fa-star"></i>
+            </div>
 
-              <div class="form-group floating-input">
-                <input
-                  type="number"
-                  id="experience"
-                  name="experience"
-                  min="0"
-                  required
-                />
-                <label for="experience">سنوات الخبرة</label>
-                <i class="fas fa-briefcase"></i>
-              </div>
+            <div class="form-group floating-input">
+              <input
+                type="number"
+                id="experience"
+                name="experience"
+                style="font-size: 0.9rem; padding: 0.5rem;"
+                min="0"
+                required
+              />
+              <label for="experience">سنوات الخبرة</label>
+              <i class="fas fa-briefcase"></i>
+            </div>
+
+            <div class="form-group floating-input">
+              <input type="text" id="location" name="location" style="font-size: 0.9rem; padding: 0.5rem;" required />
+              <label for="location">الموقع</label>
+              <i class="fas fa-map-marker-alt"></i>
             </div>
           </div>
 
@@ -150,32 +164,13 @@
                 <i class="fas fa-industry"></i>
               </div>
             </div>
-
-            <div class="form-group file-upload">
-              <label for="commercial_license">الرخصة التجارية (اختياري)</label>
-              <div class="upload-area">
-                <input
-                  type="file"
-                  id="commercial_license"
-                  name="commercial_license"
-                  accept="image/*,.pdf"
-                />
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>اسحب وأسقط الملف هنا أو انقر للاختيار</span>
-              </div>
-              
-              <div id="commercial-license-preview" style="display: none; margin-top: 10px;">
-                <img src="" alt="Commercial License Preview" style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 5px;" />
-              </div>
-            </div>
           </div>
 
-         
-          <div class="form-section">
+          <div class="form-section" style="padding: 20px;">
             <h2 class="section-title">تحقق الهوية</h2>
             <div class="form-group file-upload">
               <label for="id_photo">صورة الهوية الشخصية</label>
-              <div class="upload-area">
+              <div class="upload-area" style="font-size: 0.9rem; padding: 0.5rem;">
                 <input
                   type="file"
                   id="id_photo"
@@ -194,24 +189,43 @@
             </div>
           </div>
 
+          <div class="form-section" style="padding: 20px;">
+            <h2 class="section-title">الصورة الشخصية</h2>
+            <div class="form-group file-upload">
+                <label for="profile_photo">الصورة الشخصية</label>
+                <div class="upload-area" style="font-size: 0.9rem; padding: 0.5rem;">
+                    <input
+                        type="file"
+                        id="profile_photo"
+                        name="profile_photo"
+                        accept="image/*"
+                        required
+                    />
+                    <i class="fas fa-user-circle"></i>
+                    <span>قم بتحميل صورة شخصية واضحة</span>
+                </div>
+                <p class="upload-hint">ستظهر هذه الصورة في ملفك الشخصي</p>
+                <div id="profile-photo-preview" style="display: none; margin-top: 10px;">
+                    <img src="" alt="Profile Photo Preview" style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 5px;" />
+                </div>
+            </div>
+        </div>
          
-          <div class="form-group terms-agreement">
-            <input type="checkbox" id="terms" name="terms" required />
-            <label for="terms"
-              >أوافق على <a href="#">الشروط والأحكام</a> و
-              <a href="#">سياسة الخصوصية</a></label
-            >
+          <div class="form-group terms-agreement" style="margin-bottom: 20px;">
+            <input type="checkbox" id="terms" name="terms" required style="margin-left: 10px;" />
+            <label for="terms" style="line-height: 1.5;">
+              أوافق على <a href="#" style="color: var(--primary); text-decoration: underline;">الشروط والأحكام</a> و
+              <a href="#" style="color: var(--primary); text-decoration: underline;">سياسة الخصوصية</a>
+            </label>
           </div>
 
-          
-          <button type="submit" class="signup-btn">
+          <button type="submit" class="signup-btn" style="margin: 20px auto; font-size: 0.8rem; padding: 0.5rem 1rem; width: auto; min-width: 120px; display: block;">
             <span>إنشاء حساب</span>
             <i class="fas fa-user-plus"></i>
           </button>
 
-          
-          <div class="login-link">
-            لديك حساب بالفعل؟ <a href="login.php">سجل الدخول الآن</a>
+          <div class="login-link" style="margin-top: 15px;">
+            لديك حساب بالفعل؟ <a href="login.php" style="color: var(--primary); text-decoration: underline;">سجل الدخول الآن</a>
           </div>
         </form>
       </div>
@@ -265,7 +279,7 @@
   } else {
     workerFields.forEach((input) => input.required = false);
     employerFields.forEach((input) => {
-      // اجعل كل الحقول مطلوبة باستثناء الرخصة التجارية
+      // Except for the commercial license -- > may cancle
       if (input.id !== "commercial_license") {
         input.required = true;
       } else {
@@ -343,23 +357,10 @@
         }
       });
 
-      
-      window.addEventListener('load', function() {
-        const selectedAccountType = document.querySelector(".account-type-selector input:checked").value;
-        updateRequiredFields(selectedAccountType);
-        const fileInput = document.getElementById('id_photo');
-        const previewContainer = document.getElementById('id-photo-preview');
-        const previewImage = previewContainer.querySelector('img');
-
-        fileInput.value = '';
-        previewImage.src = '';
-        previewContainer.style.display = 'none';
-      });
-
-      
-      document.getElementById('commercial_license').addEventListener('change', function(event) {
+      // Add profile photo preview functionality
+      document.getElementById('profile_photo').addEventListener('change', function(event) {
         const file = event.target.files[0];
-        const previewContainer = document.getElementById('commercial-license-preview');
+        const previewContainer = document.getElementById('profile-photo-preview');
         const previewImage = previewContainer.querySelector('img');
 
         if (file) {
@@ -376,21 +377,18 @@
       });
 
       
-      function clearCommercialLicense() {
-        const fileInput = document.getElementById('commercial_license');
-        const previewContainer = document.getElementById('commercial-license-preview');
+      window.addEventListener('load', function() {
+        const selectedAccountType = document.querySelector(".account-type-selector input:checked").value;
+        updateRequiredFields(selectedAccountType);
+        const fileInput = document.getElementById('id_photo');
+        const previewContainer = document.getElementById('id-photo-preview');
         const previewImage = previewContainer.querySelector('img');
 
         fileInput.value = '';
         previewImage.src = '';
         previewContainer.style.display = 'none';
-      }
-
-      window.addEventListener('load', clearCommercialLicense);
-
-      document.querySelectorAll(".account-type-selector input").forEach((radio) => {
-        radio.addEventListener("change", clearCommercialLicense);
       });
+
     </script>
   </body>
 </html>
@@ -399,18 +397,16 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include 'db.php';
 
-    // Add error logging to capture issues during database operations
+    // check error when database OP
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
-    // Replace die() with user-friendly error messages and logging
     function handleError($message) {
         error_log($message);
         echo "<script>alert('حدث خطأ: $message');</script>";
         exit();
     }
 
-    // Debugging: Log the contents of the POST request
     error_log("Form submission data: " . print_r($_POST, true));
 
     if (!isset($_POST['account_type'])) {
@@ -426,8 +422,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         handleError('نوع حساب غير صالح.');
     }
 
-    // Validate required fields
-    $requiredFields = ['fullname', 'email', 'password', 'confirm_password'];
+    
+    $requiredFields = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'location'];
     if ($accountType === 'worker') {
         $requiredFields = array_merge($requiredFields, ['profession', 'skills', 'experience']);
     } else {
@@ -440,21 +436,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Validate password match
     if ($_POST['password'] !== $_POST['confirm_password']) {
         handleError('كلمات المرور غير متطابقة.');
     }
 
-    // Basic data
-    $name = $_POST['fullname'];
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     $role = $accountType === 'worker' ? 'job_seeker' : 'employer';
+    $location = $_POST['location'];
 
     try {
         $conn->beginTransaction();
 
-        // Check if email already exists
         try {
             $checkEmail = $conn->prepare("SELECT User_ID FROM user WHERE email = :email");
             $checkEmail->execute([':email' => $email]);
@@ -464,20 +459,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             handleError("Database Error: " . $e->getMessage());
         }
-
-        // Enhanced debugging for database operations
         function logDebug($message) {
-            error_log("DEBUG: " . $message);
+            error_log(message: "DEBUG: " . $message);
         }
 
-        // Log database operations
-        logDebug("Attempting to insert into user table with data: Name=$name, Email=$email, Role=$role");
+        
+        logDebug("Attempting to insert into user table with data: Name=$firstName $lastName, Email=$email, Role=$role");
 
         try {
             $sqlUser = "INSERT INTO user (name, email, password, role) VALUES (:name, :email, :password, :role)";
             $stmtUser = $conn->prepare($sqlUser);
             $stmtUser->execute([
-                ':name' => $name,
+                ':name' => $firstName . ' ' . $lastName,
                 ':email' => $email,
                 ':password' => $password,
                 ':role' => $role
@@ -489,7 +482,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             handleError("Database Error: " . $e->getMessage());
         }
 
-        // Handle ID photo upload
+        // Handle ID photo upload -- > not done (Not well examined)
         $idPhotoPath = null;
         if (isset($_FILES['id_photo']) && $_FILES['id_photo']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/id_photos/';
@@ -501,24 +494,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             move_uploaded_file($_FILES['id_photo']['tmp_name'], $idPhotoPath);
         }
 
-        // Split full name
-        $nameParts = explode(' ', $name);
-        $firstName = $nameParts[0];
-        $lastName = isset($nameParts[1]) ? implode(' ', array_slice($nameParts, 1)) : '';
+        // Handle profile photo upload
+        $profilePhotoPath = null;
+        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = 'uploads/profile_photos/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileExtension = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
+            $profilePhotoPath = $uploadDir . $userId . '_profile.' . $fileExtension;
+            move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profilePhotoPath);
+        }
 
-        // Log profile insertion
+        
         logDebug("Attempting to insert into profile table for User ID: $userId");
 
         try {
             if ($accountType === 'worker') {
                 logDebug("Inserting worker profile with Profession=$profession, Skills=$skills, Experience=$experience");
-                // Job seeker profile
+                // Job_seeker profile
                 $profession = $_POST['profession'];
                 $skills = $_POST['skills'];
                 $experience = $_POST['experience'];
 
-                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo) 
-                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo)";
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, profile_photo) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :profile_photo)";
                 $stmtProfile = $conn->prepare($sqlProfile);
                 $stmtProfile->execute([
                     ':user_id' => $userId,
@@ -526,9 +526,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':last_name' => $lastName,
                     ':bio' => $profession,
                     ':skills' => $skills,
-                    ':location' => '',
+                    ':location' => $location,
                     ':experience' => $experience,
-                    ':id_photo' => $idPhotoPath
+                    ':id_photo' => $idPhotoPath,
+                    ':profile_photo' => $profilePhotoPath
                 ]);
                 logDebug("Worker profile inserted successfully");
             } else {
@@ -537,20 +538,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $companyName = $_POST['company_name'];
                 $companyField = $_POST['company_field'];
 
-                // Handle commercial license upload
-                $licensePath = null;
-                if (isset($_FILES['commercial_license']) && $_FILES['commercial_license']['error'] === UPLOAD_ERR_OK) {
-                    $uploadDir = 'uploads/licenses/';
-                    if (!file_exists($uploadDir)) {
-                        mkdir($uploadDir, 0777, true);
-                    }
-                    $fileExtension = pathinfo($_FILES['commercial_license']['name'], PATHINFO_EXTENSION);
-                    $licensePath = $uploadDir . $userId . '_license.' . $fileExtension;
-                    move_uploaded_file($_FILES['commercial_license']['tmp_name'], $licensePath);
-                }
-
-                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, commercial_license) 
-                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :license)";
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, profile_photo) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :profile_photo)";
                 $stmtProfile = $conn->prepare($sqlProfile);
                 $stmtProfile->execute([
                     ':user_id' => $userId,
@@ -558,10 +547,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':last_name' => $lastName,
                     ':bio' => $companyName . ' - ' . $companyField,
                     ':skills' => '',
-                    ':location' => '',
+                    ':location' => $location,
                     ':experience' => '0',
                     ':id_photo' => $idPhotoPath,
-                    ':license' => $licensePath
+                    ':profile_photo' => $profilePhotoPath
                 ]);
                 logDebug("Employer profile inserted successfully");
             }
@@ -572,13 +561,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $conn->commit();
         
-        // Set session variables
         session_start();
         $_SESSION['user_id'] = $userId;
-        $_SESSION['user_name'] = $name;
+        $_SESSION['user_name'] = $firstName . ' ' . $lastName;
         $_SESSION['user_role'] = $role;
 
-        // Redirect to main page using JavaScript
         echo "<script>alert('تم إنشاء الحساب بنجاح!'); window.location.href = 'login.php';</script>";
         exit();
 

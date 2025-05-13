@@ -1,5 +1,5 @@
 <?php
-// call db
+
 $host = "127.0.0.1";
 $port = "3308"; 
 $dbname = "job_portal";
@@ -11,15 +11,15 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // get data professionals from db
-    $stmt = $conn->prepare("SELECT user.User_ID, user.name, profile.bio, profile.location, profile.experience, profile.id_photo 
+    $stmt = $conn->prepare("SELECT user.User_ID, CONCAT(profile.first_name, ' ', profile.last_name) AS name, profile.bio AS profession, profile.location, profile.experience, profile.id_photo 
 FROM user 
 INNER JOIN profile ON user.User_ID = profile.User_ID 
-WHERE user.account_type = 'job seeker'");
+WHERE user.role = 'job_seeker'");
     $stmt->execute();
 
     $professionals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // print JSON
+    
     header('Content-Type: application/json');
     echo json_encode($professionals, JSON_PRETTY_PRINT);
 
