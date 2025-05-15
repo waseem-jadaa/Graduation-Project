@@ -36,10 +36,10 @@ if (!isset($user_name)) {
               <i class="fas fa-sign-out-alt" onclick="location.href='main.php'"></i>
             </div>
           </div>
-          <div class="logo">
-            <span>Fursa<span style="color: var(--primary);">Pal</span></span>
-            <i class="fas fa-handshake"></i>
-          </div>
+         <div class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Fursa<span style="color: var(--primary);">Pal</span></span>
+        </div>
         </nav>
       </div>
     </header>

@@ -1,26 +1,33 @@
-<link rel="stylesheet" href="project.css">
-<aside class="sidebar">
-  <div class="sidebar-menu">
-    <div class="menu-item">
+<link rel="stylesheet" href="sidebar.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script src="sidebar.js"></script>
+<aside class="sidebar" dir="rtl">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <span style="color:#ff5722;font-weight:bold;">Fursa</span>
+      <span style="color:#2d7d46;font-weight:bold;">Pal</span>
+      <i class="fas fa-handshake" style="color:#2d7d46;"></i>
+    </div>
+    <button class="sidebar-toggle-btn" aria-label="تبديل القائمة الجانبية"><i class="fas fa-bars"></i></button>
+  </div>
+  <nav class="sidebar-menu">
+    <div class="menu-section">الرئيسية</div>
+    <a class="menu-item" href="dashboard.php">
       <i class="fas fa-home"></i>
-      <a href="dashboard.php"><span>الرئيسية</span></a>
-    </div>
-    <div class="menu-item">
+      <span>الرئيسية</span>
+    </a>
+    <a class="menu-item" href="jobs.php">
       <i class="fas fa-briefcase"></i>
-      <a href="jobs.php"><span>الوظائف</span></a>
-    </div>
-    <div class="menu-item">
+      <span>الوظائف</span>
+    </a>
+    <a class="menu-item" href="professionals.php">
       <i class="fas fa-user-tie"></i>
-      <a href="professionals.php"><span>المهنييون</span></a>
-    </div>
-    <div class="menu-item">
-      <i class="fas fa-chart-line"></i>
-      <a href="stats.php"><span>الإحصائيات</span></a>
-    </div>
-    <div class="menu-item">
+      <span>المهنيون</span>
+    </a>
+    <div class="menu-section">الإعدادات</div>
+    <a class="menu-item" href="settings.php">
       <i class="fas fa-cog"></i>
-      <a href="settings.php"><span>الإعدادات</span></a>
-    </div>
-  </div>
-  </div>
+      <span>الإعدادات</span>
+    </a>
+  </nav>
 </aside>

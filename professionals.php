@@ -41,15 +41,28 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 <body class="dashboard-page">
     <?php include 'headerDash.php'; ?>
-    <?php include 'sidebar.php'; ?>
-
+    
     <main class="main-content">
         <div class="container">
             <h1>المهنيين المتاحين</h1>
             <div id="professionals-container" class="jobs-container">
-                <!-- Professional boxes will be dynamically loaded here -->
+                
             </div>
         </div>
     </main>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var userProfile = document.querySelector('.user-profile');
+      if (userProfile) {
+        userProfile.addEventListener('click', function(e) {
+          this.classList.toggle('active');
+          e.stopPropagation();
+        });
+        document.addEventListener('click', function() {
+          userProfile.classList.remove('active');
+        });
+      }
+    });
+    </script>
 </body>
 </html>

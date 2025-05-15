@@ -3,12 +3,25 @@ session_start();
 include 'db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
+    // جلب البيانات القديمة من قاعدة البيانات
+    $stmt = $conn->prepare('SELECT first_name, last_name, bio, skills, location, experience FROM profile WHERE User_ID = :user_id');
+    $stmt->execute([':user_id' => $user_id]);
+    $old = $stmt->fetch(PDO::FETCH_ASSOC);
+
     $first_name = htmlspecialchars($_POST['first_name'] ?? '');
     $last_name = htmlspecialchars($_POST['last_name'] ?? '');
     $bio = htmlspecialchars($_POST['bio'] ?? '');
     $skills = htmlspecialchars($_POST['skills'] ?? '');
     $location = htmlspecialchars($_POST['location'] ?? '');
     $experience = htmlspecialchars($_POST['experience'] ?? '');
+
+    // إذا كان الحقل فارغًا، استخدم القيمة القديمة
+    $first_name = $first_name !== '' ? $first_name : $old['first_name'];
+    $last_name = $last_name !== '' ? $last_name : $old['last_name'];
+    $bio = $bio !== '' ? $bio : $old['bio'];
+    $skills = $skills !== '' ? $skills : $old['skills'];
+    $location = $location !== '' ? $location : $old['location'];
+    $experience = $experience !== '' ? $experience : $old['experience'];
 
     $profile_photo_path = null;
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {

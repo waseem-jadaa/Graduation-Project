@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
 </head>
 <body>
     <?php include 'headerDash.php'; ?>
-    <?php include 'sidebar.php'; ?>
+    <!-- تم إلغاء استدعاء السايدبار القديم -->
 
     <div class="post-job-section">
         <h2>إضافة وظيفة جديدة</h2>

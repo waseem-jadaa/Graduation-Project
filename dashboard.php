@@ -34,11 +34,8 @@ try {
 
   <body class="dashboard-page">
     
-   
-
     <?php include 'headerDash.php'; ?>
-    <?php include 'sidebar.php'; ?>
-
+    
     
     <main class="main-content">
       <div class="container">
