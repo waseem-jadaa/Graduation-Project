@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إعلان عن وظيفة</title>
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="css/project.css">
 </head>
 <body>
     <?php include 'headerDash.php'; ?>

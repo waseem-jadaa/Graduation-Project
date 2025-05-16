@@ -11,7 +11,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // get data professionals from db
-    $stmt = $conn->prepare("SELECT user.User_ID, CONCAT(profile.first_name, ' ', profile.last_name) AS name, profile.bio AS profession, profile.location, profile.experience, profile.id_photo 
+    $stmt = $conn->prepare("SELECT user.User_ID, CONCAT(profile.first_name, ' ', profile.last_name) AS name, profile.bio AS profession, profile.location, profile.experience, profile.id_photo, profile.profile_photo 
 FROM user 
 INNER JOIN profile ON user.User_ID = profile.User_ID 
 WHERE user.role = 'job_seeker'");

@@ -11,8 +11,17 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الوظائف</title>
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="css/project.css">
     <script>
+        async function getUserRole() {
+            // جلب نوع الحساب من السيرفر
+            const res = await fetch('get_user_role.php');
+            if (res.ok) {
+                const data = await res.json();
+                return data.role;
+            }
+            return null;
+        }
         async function fetchJobs() {
             try {
                 const response = await fetch('get_jobs.php');
@@ -47,9 +56,15 @@ if (!isset($_SESSION['user_id'])) {
                 });
 
                 // إضافة منطق التقديم على الوظيفة
-                setTimeout(() => {
+                setTimeout(async () => {
+                    const userRole = await getUserRole();
                     document.querySelectorAll('.btn-apply').forEach(btn => {
-                        btn.addEventListener('click', function() {
+                        btn.addEventListener('click', function(e) {
+                            if (userRole === 'employer') {
+                                e.preventDefault();
+                                alert('لا يمكنك التقديم على الوظائف انت صاحب عمل وليس باحث عن عمل');
+                                return;
+                            }
                             const jobId = this.getAttribute('data-job-id');
                             this.disabled = true;
                             fetch('apply_job.php', {

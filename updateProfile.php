@@ -23,6 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location = $location !== '' ? $location : $old['location'];
     $experience = $experience !== '' ? $experience : $old['experience'];
 
+    // جلب نوع الحساب من جدول المستخدمين
+    $stmt = $conn->prepare('SELECT role FROM user WHERE User_ID = :user_id');
+    $stmt->execute([':user_id' => $user_id]);
+    $userRoleRow = $stmt->fetch(PDO::FETCH_ASSOC);
+    $realRole = $userRoleRow ? $userRoleRow['role'] : '';
+
+    // إذا كان صاحب عمل employer، تجاهل المهارات والخبرة
+    if ($realRole === 'employer') {
+        $skills = '';
+        $experience = '0';
+    }
+
     $profile_photo_path = null;
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = 'uploads/profile_photos/';
