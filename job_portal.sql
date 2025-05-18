@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3308
--- Generation Time: May 14, 2025 at 12:09 AM
+-- Generation Time: May 18, 2025 at 09:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,8 +31,29 @@ CREATE TABLE `application` (
   `application_ID` int(11) NOT NULL,
   `job_ID` int(11) DEFAULT NULL,
   `user_ID` int(11) DEFAULT NULL,
-  `status` enum('pending','accepted','rejected') DEFAULT 'pending'
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `employer_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `application`
+--
+
+INSERT INTO `application` (`application_ID`, `job_ID`, `user_ID`, `status`, `employer_id`) VALUES
+(18, NULL, 20, 'accepted', 9),
+(19, NULL, 12, 'accepted', 9),
+(22, NULL, 19, 'accepted', 9),
+(25, NULL, 21, 'pending', 22),
+(26, NULL, 19, 'pending', 23),
+(27, 15, 19, 'accepted', NULL),
+(28, NULL, 12, 'accepted', 23),
+(29, NULL, 20, 'accepted', 23),
+(30, NULL, 21, 'pending', 23),
+(31, NULL, 20, 'accepted', 23),
+(32, 16, 21, 'accepted', NULL),
+(33, NULL, 20, 'accepted', 24),
+(34, NULL, 12, 'pending', 23),
+(35, 17, 20, 'accepted', NULL);
 
 -- --------------------------------------------------------
 
@@ -54,13 +75,9 @@ CREATE TABLE `job` (
 --
 
 INSERT INTO `job` (`job_ID`, `employer_ID`, `title`, `description`, `location`, `salary`) VALUES
-(1, 9, 'مطلوب قصير ', 'ان يعمل بكفاءة عالية ', 'نابلس ', 3000.00),
-(2, 9, 'كهربائي', 'ان يكون لديه خبرة و اتقان في تصليح الكهربائيات من مصابيح , ...', 'قلقيلية', 0.00),
-(6, 9, 'موسرجي', 'ان يكون قادر على عمل خط رئيسي للمنزل ', 'رام الله', 1500.00),
-(7, 9, 'تركيب كرميد ', 'ان يكون لديه خبرة في جميع انواع الكرميد ', 'حبلة', 250.00),
-(12, 9, 'بستاني ', 'المطلوب شخص لديه خبرة وذوق رفيق في البساتين بعدة انماطها ', 'المصيون', 4000.00),
-(13, 9, 'عامل بناء ', 'ان يكون لديه خبرة متنوعة ', 'ياصيد', 1000.00),
-(14, 9, 'شوفير تكسي ', 'امتلك رخصة عمومية وحاصل على شهادة حسن سلوك بامتياز \r\nالسير على خط نابلس - رام الله ', 'نابلس ', 3500.00);
+(15, 24, 'فرقة سفرجية ', 'الشروط: \r\nاخلاق واحترام متبادل مع الناس', 'نابلس', 1500.00),
+(16, 23, 'دهان وديكورات جبص ', 'ان يمتلك خبرة جيدة في العمل ', 'راس عطية', 5000.00),
+(17, 24, 'صانعة حلوى ', 'لديها ذوق رفيع في تصميمات الجاتوه ', 'نابلس', 3500.00);
 
 -- --------------------------------------------------------
 
@@ -111,15 +128,78 @@ CREATE TABLE `message` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notification`
+-- Table structure for table `notifications`
 --
 
-CREATE TABLE `notification` (
-  `notification_ID` int(11) NOT NULL,
-  `user_ID` int(11) DEFAULT NULL,
-  `type` enum('message','job_update','application_status') NOT NULL,
-  `message` text NOT NULL
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `message`, `link`, `is_read`, `created_at`) VALUES
+(6, 19, 'تم قبول طلبك لوظيفة: كهربائي', 'jobs.php', 0, '2025-05-15 15:27:38'),
+(8, 19, 'تم رفض طلبك لوظيفة: بستاني ', 'jobs.php', 1, '2025-05-15 15:37:36'),
+(11, 20, 'تم قبول طلبك لوظيفة: شوفير تكسي ', 'jobs.php', 0, '2025-05-15 22:18:17'),
+(13, 12, 'تم قبول طلبك لوظيفة: تركيب كرميد ', 'jobs.php', 1, '2025-05-16 16:06:28'),
+(23, 19, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 0, '2025-05-16 17:29:04'),
+(24, 20, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 0, '2025-05-16 17:29:07'),
+(25, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:11:23'),
+(26, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:12:18'),
+(38, 12, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 1, '2025-05-16 18:20:22'),
+(41, 20, 'تم قبول طلبك لوظيفة: بستاني ', 'jobs.php', 0, '2025-05-16 18:44:03'),
+(42, 19, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:44:58'),
+(45, 19, 'تم قبول طلبك لوظيفة: شوفير تكسي ', 'jobs.php', 0, '2025-05-16 18:47:02'),
+(47, 12, 'تم قبول طلبك لوظيفة: بستاني ', 'jobs.php', 1, '2025-05-16 18:50:18'),
+(48, 21, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 0, '2025-05-16 19:10:53'),
+(49, 19, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 0, '2025-05-17 00:17:49'),
+(50, 24, 'تقدم شخص جديد لوظيفة: فرقة سفرجية . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=15', 1, '2025-05-17 00:28:02'),
+(51, 19, 'تم قبول طلبك لوظيفة: فرقة سفرجية ', 'jobs.php', 0, '2025-05-17 00:30:06'),
+(52, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-17 22:44:31'),
+(53, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-17 22:48:43'),
+(54, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-17 22:49:18'),
+(55, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-17 22:49:31'),
+(56, 21, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-18 01:14:37'),
+(57, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-18 01:14:45'),
+(58, 23, 'تقدم شخص جديد لوظيفة: دهان وديكورات جبص . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=16', 1, '2025-05-18 01:15:37'),
+(59, 21, 'تم قبول طلبك لوظيفة: دهان وديكورات جبص ', 'jobs.php', 0, '2025-05-18 01:17:00'),
+(60, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-18 21:46:32'),
+(61, 24, 'تم قبول طلبك من المهني.', '', 1, '2025-05-18 21:46:52'),
+(62, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-18 21:47:06'),
+(63, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-18 22:17:07'),
+(64, 24, 'تقدم شخص جديد لوظيفة: صانعة حلوى . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=17', 1, '2025-05-18 22:27:15'),
+(65, 20, 'تم قبول طلبك لوظيفة: صانعة حلوى ', 'jobs.php', 1, '2025-05-18 22:29:33');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `professional_ratings`
+--
+
+CREATE TABLE `professional_ratings` (
+  `id` int(11) NOT NULL,
+  `professional_id` int(11) NOT NULL,
+  `employer_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` between 1 and 5),
+  `review` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `professional_ratings`
+--
+
+INSERT INTO `professional_ratings` (`id`, `professional_id`, `employer_id`, `rating`, `review`, `created_at`) VALUES
+(1, 12, 23, 4, '', '2025-05-18 16:54:56'),
+(2, 20, 23, 3, '', '2025-05-18 18:42:30'),
+(3, 20, 24, 4, '', '2025-05-18 18:47:38');
 
 -- --------------------------------------------------------
 
@@ -146,8 +226,24 @@ CREATE TABLE `profile` (
 
 INSERT INTO `profile` (`profile_ID`, `User_ID`, `first_name`, `last_name`, `bio`, `skills`, `location`, `experience`, `id_photo`, `profile_photo`) VALUES
 (3, 12, 'mosab ', 'mashaqi', 'قصارة', 'فولخ , حجر', 'ياصيد', '5', 'uploads/id_photos/12_id.webp', NULL),
-(9, 18, '', '', '', '', '', '', 'uploads/id_photos/18_id.jpg', 'uploads/profile_photos/18_profile.jpg'),
-(10, 19, 'mayar', 'elyan', 'مصممة ازياء ', 'تصميم بدلات اعراس , تصميم ستايلات حديثة للجنسين ', 'جيوس', '8', 'uploads/id_photos/19_id.png', 'uploads/profile_photos/19_profile.webp');
+(10, 19, 'mayar', 'elyan', 'مصممة ازياء ', 'تصميم بدلات اعراس , تصميم ستايلات حديثة للجنسين ', 'جيوس', '7', 'uploads/id_photos/19_id.png', 'uploads/profile_photos/19_profile.jpg'),
+(11, 20, 'Ayman', 'Qadome', 'سياحة وسفر ', 'سياحة وسفر ', 'كفر قدوم', '21', 'uploads/id_photos/20_id.png', 'uploads/profile_photos/20_profile.jpg'),
+(12, 21, 'مالك', 'جدع', 'حلاق', 'حلاقة شعر لجميع الفئات العمرية , حلاقة عريس , تنظيف بشرة , سشوار , تحديد لحية ', 'قلقيلية - حبلة', '5', 'uploads/id_photos/21_id.jpg', 'uploads/profile_photos/21_profile.jpg'),
+(14, 23, 'waseem', 'Jadaa', 'مقاول اعمال حرة , جميع المجالات', '', 'جبع - رام الله', '0', 'uploads/id_photos/23_id.jpg', 'uploads/profile_photos/23_profile.jpg'),
+(15, 24, 'محمد', 'محمد', 'ادارة اعراس ', '', 'جنين', '0', 'uploads/id_photos/24_id.jpg', 'uploads/profile_photos/24_profile.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saved_jobs`
+--
+
+CREATE TABLE `saved_jobs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `job_id` int(11) NOT NULL,
+  `saved_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -188,10 +284,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`User_ID`, `name`, `email`, `password`, `role`) VALUES
-(9, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$/1AT5wb1gHObgtjxKyAxsOg4L4x48kkaI5.Z3ilTrOk3p0Erxyr9G', 'employer'),
 (12, 'mosab mashaqi', 's12029151@stu.najah.edu', '$2y$10$dH3On4IRQ.bfKIRksuNRLuVutz2PlpxyMXKnE3r999MeQzQ/0Kd.G', 'job_seeker'),
-(18, 'Ayman Qadome', 'adnansleem370@gmail.com', '$2y$10$yInBhQ8WlFDWiHNf.LMVY.YHMtEArqe81CaAy2lRYA45/GarUeaqu', 'job_seeker'),
-(19, 'mayar elyan', 'mayarelyan2@gmail.com', '$2y$10$VqSZM1G6/RGevQJILWHUIuEgcEO8XD39DOEbzeBo025YiYK2bV/oS', 'job_seeker');
+(19, 'mayar elyan', 'mayarelyan2@gmail.com', '$2y$10$VqSZM1G6/RGevQJILWHUIuEgcEO8XD39DOEbzeBo025YiYK2bV/oS', 'job_seeker'),
+(20, 'Ayman Qadome', 'adnansleem370@gmail.com', '$2y$10$elgk53iYroeFKKZl4v0mMe9oYpdq5v70MjGZxQRH16HTa6J7Ous3K', 'job_seeker'),
+(21, 'مالك جدع', 'malek.jada@gmail.com', '$2y$10$x/.gWKGcsj6JPOU8Z5REUO.1mDMKojAuJOzErCAEF1AZkVJs/at06', 'job_seeker'),
+(23, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$gKfYflfEUaOSltcS2u3dSu7gHwKGE9k/jreVebNVEmHYND85L15ZG', 'employer'),
+(24, 'محمد محمد', 'mohamad.790@gmail.com', '$2y$10$4Rj.05sfSG3nIfAjbzcmi.rw/Vz046YY4IAFlhamyKfKYz5rxNUpu', 'employer');
 
 -- --------------------------------------------------------
 
@@ -252,11 +350,19 @@ ALTER TABLE `message`
   ADD KEY `receiver_ID` (`receiver_ID`);
 
 --
--- Indexes for table `notification`
+-- Indexes for table `notifications`
 --
-ALTER TABLE `notification`
-  ADD PRIMARY KEY (`notification_ID`),
-  ADD KEY `user_ID` (`user_ID`);
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `professional_ratings`
+--
+ALTER TABLE `professional_ratings`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `professional_id` (`professional_id`),
+  ADD KEY `employer_id` (`employer_id`);
 
 --
 -- Indexes for table `profile`
@@ -264,6 +370,14 @@ ALTER TABLE `notification`
 ALTER TABLE `profile`
   ADD PRIMARY KEY (`profile_ID`),
   ADD UNIQUE KEY `User_ID` (`User_ID`);
+
+--
+-- Indexes for table `saved_jobs`
+--
+ALTER TABLE `saved_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_saved` (`user_id`,`job_id`),
+  ADD KEY `job_id` (`job_id`);
 
 --
 -- Indexes for table `skill`
@@ -293,13 +407,13 @@ ALTER TABLE `user_skill`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `application_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `application_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `job`
 --
 ALTER TABLE `job`
-  MODIFY `job_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `job_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `keyword`
@@ -314,16 +428,28 @@ ALTER TABLE `message`
   MODIFY `message_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `notification`
+-- AUTO_INCREMENT for table `notifications`
 --
-ALTER TABLE `notification`
-  MODIFY `notification_ID` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+
+--
+-- AUTO_INCREMENT for table `professional_ratings`
+--
+ALTER TABLE `professional_ratings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `profile`
 --
 ALTER TABLE `profile`
-  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `saved_jobs`
+--
+ALTER TABLE `saved_jobs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `skill`
@@ -335,7 +461,7 @@ ALTER TABLE `skill`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
@@ -376,16 +502,30 @@ ALTER TABLE `message`
   ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`receiver_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `notification`
+-- Constraints for table `notifications`
 --
-ALTER TABLE `notification`
-  ADD CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `professional_ratings`
+--
+ALTER TABLE `professional_ratings`
+  ADD CONSTRAINT `professional_ratings_ibfk_1` FOREIGN KEY (`professional_id`) REFERENCES `user` (`User_ID`),
+  ADD CONSTRAINT `professional_ratings_ibfk_2` FOREIGN KEY (`employer_id`) REFERENCES `user` (`User_ID`);
 
 --
 -- Constraints for table `profile`
 --
 ALTER TABLE `profile`
   ADD CONSTRAINT `profile_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `saved_jobs`
+--
+ALTER TABLE `saved_jobs`
+  ADD CONSTRAINT `saved_jobs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`User_ID`),
+  ADD CONSTRAINT `saved_jobs_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `job` (`job_ID`);
 
 --
 -- Constraints for table `user_skill`

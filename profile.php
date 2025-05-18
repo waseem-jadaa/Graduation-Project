@@ -59,7 +59,8 @@ $location = $location ?? htmlspecialchars($profile['location'] ?? 'غير متو
 $experience = $experience ?? htmlspecialchars($profile['experience'] ?? 'غير متوفر');
 $id_photo = $id_photo ?? htmlspecialchars($profile['id_photo'] ?? 'image/p.png');
 $email = $email ?? htmlspecialchars($profile['email'] ?? 'غير متوفر');
-$role = $role ?? htmlspecialchars($profile['role'] ?? 'غير متوفر');
+// استخدم قيمة role الحقيقية من قاعدة البيانات (employer/job_seeker)
+$role = $profile['role'] ?? ($role ?? 'غير متوفر');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and validate input data
@@ -70,20 +71,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $location = htmlspecialchars($_POST['location'] ?? '');
     $experience = htmlspecialchars($_POST['experience'] ?? '');
 
+    // معرفة نوع الحساب من قاعدة البيانات
+    $stmt = $conn->prepare('SELECT u.role FROM user u WHERE u.User_ID = :user_id');
+    $stmt->execute([':user_id' => $user_id]);
+    $userRoleRow = $stmt->fetch(PDO::FETCH_ASSOC);
+    $realRole = $userRoleRow ? $userRoleRow['role'] : '';
+
+    // إذا كان صاحب عمل employer، تجاهل المهارات والخبرة
+    if ($realRole === 'employer') {
+        $skills = '';
+        $experience = '0';
+        // اجعل الحقول غير مطلوبة حتى لا تمنع الفورم من الإرسال
+        unset($_POST['skills']);
+        unset($_POST['experience']);
+    }
+
+    // معالجة رفع صورة جديدة
+    $profile_photo_path = $profile['profile_photo'] ?? null;
+    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/profile_photos/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        $fileExtension = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
+        $profile_photo_path = $uploadDir . $user_id . '_profile.' . $fileExtension;
+        move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profile_photo_path);
+    }
+
     try {
-        // Update profile data in the database
-        $stmt = $conn->prepare('UPDATE profile SET first_name = :first_name, last_name = :last_name, bio = :bio, skills = :skills, location = :location, experience = :experience WHERE User_ID = :user_id');
-        $stmt->execute([
-            ':first_name' => $first_name,
-            ':last_name' => $last_name,
-            ':bio' => $bio,
-            ':skills' => $skills,
-            ':location' => $location,
-            ':experience' => $experience,
-            ':user_id' => $user_id
-        ]);
+        // تحديث البيانات مع الصورة إذا تم رفعها
+        if ($profile_photo_path) {
+            $stmt = $conn->prepare('UPDATE profile SET first_name = :first_name, last_name = :last_name, bio = :bio, skills = :skills, location = :location, experience = :experience, profile_photo = :profile_photo WHERE User_ID = :user_id');
+            $stmt->execute([
+                ':first_name' => $first_name,
+                ':last_name' => $last_name,
+                ':bio' => $bio,
+                ':skills' => $skills,
+                ':location' => $location,
+                ':experience' => $experience,
+                ':profile_photo' => $profile_photo_path,
+                ':user_id' => $user_id
+            ]);
+        } else {
+            $stmt = $conn->prepare('UPDATE profile SET first_name = :first_name, last_name = :last_name, bio = :bio, skills = :skills, location = :location, experience = :experience WHERE User_ID = :user_id');
+            $stmt->execute([
+                ':first_name' => $first_name,
+                ':last_name' => $last_name,
+                ':bio' => $bio,
+                ':skills' => $skills,
+                ':location' => $location,
+                ':experience' => $experience,
+                ':user_id' => $user_id
+            ]);
+        }
 
         echo '<p>تم تحديث الملف الشخصي بنجاح.</p>';
+        echo '<script>setTimeout(function(){ location.reload(); }, 800);</script>';
     } catch (PDOException $e) {
         die("Error updating profile data: " . $e->getMessage());
     }
@@ -97,8 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي</title>
-    <link rel="stylesheet" href="project.css">
-    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="css/project.css">
+    <link rel="stylesheet" href="css/profile.css">
     <style>
         body, .profile-container, .profile-form, .profile-details, .profile-header {
             direction: rtl !important;
@@ -200,6 +243,28 @@ profilePhotoInput.addEventListener('change', function(event) {
         editBtn.style.display = 'none';
     }
 });
+
+(function() {
+    var role = <?php echo json_encode($role); ?>;
+    if (role === 'employer') {
+        // إخفاء المهارات وسنوات الخبرة
+        var skillsGroup = document.getElementById('skills').parentElement;
+        var experienceGroup = document.getElementById('experience').parentElement;
+        if (skillsGroup) {
+            skillsGroup.querySelector('input').disabled = true;
+            skillsGroup.querySelector('input').removeAttribute('required');
+            skillsGroup.style.display = 'none';
+        }
+        if (experienceGroup) {
+            experienceGroup.querySelector('input').disabled = true;
+            experienceGroup.querySelector('input').removeAttribute('required');
+            experienceGroup.style.display = 'none';
+        }
+        // تغيير تسمية المهنة إلى مجال العمل
+        var bioLabel = document.querySelector('label[for="bio"]');
+        if (bioLabel) bioLabel.innerHTML = '<strong>مجال العمل:</strong>';
+    }
+})();
 </script>
 </body>
 </html>

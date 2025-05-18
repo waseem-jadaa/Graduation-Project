@@ -4,6 +4,8 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$searchTerm = htmlspecialchars($searchTerm);
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -11,14 +13,29 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الوظائف</title>
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="css/project.css">
     <script>
+        async function getUserRole() {
+            // جلب نوع الحساب من السيرفر
+            const res = await fetch('get_user_role.php');
+            if (res.ok) {
+                const data = await res.json();
+                return data.role;
+            }
+            return null;
+        }
         async function fetchJobs() {
             try {
-                const response = await fetch('get_jobs.php');
+                const response = await fetch(`get_jobs.php?search=${encodeURIComponent('<?php echo $searchTerm; ?>')}`);
                 const jobs = await response.json();
                 const jobsContainer = document.getElementById('jobs-container');
                 jobsContainer.innerHTML = '';
+
+                if (jobs.length === 0) {
+                    jobsContainer.innerHTML = '<p>لا توجد نتائج مطابقة.</p>';
+                    return;
+                }
+
 
                 jobs.forEach(job => {
                     const jobBox = document.createElement('div');
@@ -47,9 +64,15 @@ if (!isset($_SESSION['user_id'])) {
                 });
 
                 // إضافة منطق التقديم على الوظيفة
-                setTimeout(() => {
+                setTimeout(async () => {
+                    const userRole = await getUserRole();
                     document.querySelectorAll('.btn-apply').forEach(btn => {
-                        btn.addEventListener('click', function() {
+                        btn.addEventListener('click', function(e) {
+                            if (userRole === 'employer') {
+                                e.preventDefault();
+                                alert('لا يمكنك التقديم على الوظائف انت صاحب عمل وليس باحث عن عمل');
+                                return;
+                            }
                             const jobId = this.getAttribute('data-job-id');
                             this.disabled = true;
                             fetch('apply_job.php', {

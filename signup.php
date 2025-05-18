@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FursaPal - إنشاء حساب جديد</title>
-    <link rel="stylesheet" href="project.css" />
+    <link rel="stylesheet" href="css/project.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -119,17 +119,11 @@
             <h2 class="section-title">المعلومات المهنية</h2>
             <div class="form-group floating-input">
               <input type="text" id="profession" name="profession" style="font-size: 0.9rem; padding: 0.5rem;" required />
-              <label for="profession">المهنة</label>
+              <label for="profession" id="profession-label">المهنة</label>
               <i class="fas fa-tools"></i>
             </div>
 
-            <div class="form-group floating-input">
-              <input type="text" id="skills" name="skills" style="font-size: 0.9rem; padding: 0.5rem;" required />
-              <label for="skills">المهارات (مفصولة بفواصل)</label>
-              <i class="fas fa-star"></i>
-            </div>
-
-            <div class="form-group floating-input">
+            <div class="form-group floating-input" id="experience-group">
               <input
                 type="number"
                 id="experience"
@@ -140,6 +134,12 @@
               />
               <label for="experience">سنوات الخبرة</label>
               <i class="fas fa-briefcase"></i>
+            </div>
+
+            <div class="form-group floating-input" id="skills-group">
+              <input type="text" id="skills" name="skills" style="font-size: 0.9rem; padding: 0.5rem;" required />
+              <label for="skills">المهارات (مفصولة بفواصل)</label>
+              <i class="fas fa-star"></i>
             </div>
 
             <div class="form-group floating-input">
@@ -270,54 +270,34 @@
     
     <script>
       function updateRequiredFields(accountType) {
-  const workerFields = document.querySelectorAll("#worker-fields input");
-  const employerFields = document.querySelectorAll("#employer-fields input");
-
-  if (accountType === "worker") {
-    workerFields.forEach((input) => input.required = true);
-    employerFields.forEach((input) => input.required = false);
-  } else {
-    workerFields.forEach((input) => input.required = false);
-    employerFields.forEach((input) => {
-      // Except for the commercial license -- > may cancle
-      if (input.id !== "commercial_license") {
-        input.required = true;
-      } else {
-        input.required = false;
+        // تغيير اسم الحقل حسب نوع الحساب
+        var professionLabel = document.getElementById('profession-label');
+        var experienceGroup = document.getElementById('experience-group');
+        var skillsGroup = document.getElementById('skills-group');
+        var experienceInput = document.getElementById('experience');
+        var skillsInput = document.getElementById('skills');
+        if (accountType === 'worker') {
+          professionLabel.textContent = 'المهنة';
+          experienceGroup.style.display = 'block';
+          skillsGroup.style.display = 'block';
+          experienceInput.required = true;
+          skillsInput.required = true;
+        } else {
+          professionLabel.textContent = 'مجال العمل';
+          experienceGroup.style.display = 'none';
+          skillsGroup.style.display = 'none';
+          experienceInput.required = false;
+          skillsInput.required = false;
+        }
       }
-     });
-  }
-}
-
-      document.querySelectorAll(".account-type-selector input").forEach((radio) => {
-        radio.addEventListener("change", function () {
-          
-          document.querySelectorAll(".signup-form input").forEach((input) => {
-            if (input.type !== "radio" && input.type !== "checkbox") {
-              input.value = "";
-            } else if (input.type === "checkbox") {
-              input.checked = false;
-            }
-          });
-
-          
-          const previewContainers = document.querySelectorAll(".file-upload #id-photo-preview");
-          previewContainers.forEach((container) => {
-            const previewImage = container.querySelector("img");
-            previewImage.src = "";
-            container.style.display = "none";
-          });
-
-          
-          if (this.value === "worker") {
-            document.getElementById("worker-fields").style.display = "block";
-            document.getElementById("employer-fields").style.display = "none";
-          } else {
-            document.getElementById("worker-fields").style.display = "none";
-            document.getElementById("employer-fields").style.display = "block";
-          }
+      document.querySelectorAll('.account-type-selector input').forEach(function(radio) {
+        radio.addEventListener('change', function () {
           updateRequiredFields(this.value);
         });
+      });
+      window.addEventListener('load', function() {
+        var selectedAccountType = document.querySelector('.account-type-selector input:checked').value;
+        updateRequiredFields(selectedAccountType);
       });
 
       
@@ -427,7 +407,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($accountType === 'worker') {
         $requiredFields = array_merge($requiredFields, ['profession', 'skills', 'experience']);
     } else {
-        $requiredFields = array_merge($requiredFields, ['company_name', 'company_field']);
+        // لم يعد هناك حقل اسم الشركة أو مجال الشركة في الواجهة، فلا داعي للتحقق منهما
+        // $requiredFields = array_merge($requiredFields, ['company_name', 'company_field']);
     }
 
     foreach ($requiredFields as $field) {
@@ -533,11 +514,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
                 logDebug("Worker profile inserted successfully");
             } else {
-                logDebug("Inserting employer profile with Company Name=$companyName, Company Field=$companyField");
-                // Employer profile
-                $companyName = $_POST['company_name'];
-                $companyField = $_POST['company_field'];
-
+                // Employer profile: استخدم فقط مجال العمل (profession) في bio، skills فارغ، experience صفر
+                $profession = $_POST['profession'];
                 $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, profile_photo) 
                               VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :profile_photo)";
                 $stmtProfile = $conn->prepare($sqlProfile);
@@ -545,7 +523,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':user_id' => $userId,
                     ':first_name' => $firstName,
                     ':last_name' => $lastName,
-                    ':bio' => $companyName . ' - ' . $companyField,
+                    ':bio' => $profession,
                     ':skills' => '',
                     ':location' => $location,
                     ':experience' => '0',

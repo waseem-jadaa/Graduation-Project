@@ -2262,7 +2262,7 @@ nav {
   position: absolute;
   left: 0;
   top: 0;
-  color: #ccc;
+  color: #0b8f49;
   font-size: 1.2rem;
   cursor: pointer;
   transition: color 0.3s;
@@ -2270,6 +2270,14 @@ nav {
 
 .job-save:hover {
   color: var(--accent);
+}
+
+.job-save.saved {
+  color: #0b8f49 !important;
+}
+
+.job-save.saved i {
+  color: #0b8f49 !important;
 }
 
 .job-details {

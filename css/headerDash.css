@@ -1,3 +1,7 @@
+/* تغيير لون أيقونة البحث داخل مربع البحث للون الأسود */
+.search-bar button i.fas.fa-search {
+  color: #000 !important;
+}
 /* CSS extracted from headerDash.php */
 :root {
   --sidebar-width: 270px;
