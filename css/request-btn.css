@@ -1,0 +1,23 @@
+/* CSS خاص بزر طلب المهني */
+.request-btn, .btn-request-professional {
+    background: #1abc5b;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #0001;
+}
+.request-btn:disabled, .btn-request-professional:disabled {
+    background: #ccc;
+    color: #888;
+    cursor: not-allowed;
+}
+.request-btn:hover:not(:disabled), .btn-request-professional:hover:not(:disabled) {
+    background: #159c48;
+    box-shadow: 0 4px 16px #0002;
+}
