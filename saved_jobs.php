@@ -22,6 +22,7 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>الوظائف المحفوظة</title>
     <link rel="stylesheet" href="css/project.css">
+   
     <style>
         .saved-jobs-container {
             max-width: 900px;
@@ -78,7 +79,7 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <p style="color:#888;">لا يوجد وظائف محفوظة حالياً.</p>
     <?php else: ?>
         <?php foreach ($saved_jobs as $job): ?>
-            <div class="saved-job-card">
+            <div class="saved-job-card" data-job-id="<?php echo $job['job_ID']; ?>">
                 <div class="saved-job-info">
                     <div class="saved-job-title"><?php echo htmlspecialchars($job['title']); ?></div>
                     <div class="saved-job-desc"><?php echo htmlspecialchars($job['description']); ?></div>
@@ -88,13 +89,38 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <span>صاحب العمل: <?php echo htmlspecialchars($job['employer_name']); ?></span>
                     </div>
                 </div>
-                <form method="post" action="remove_saved_job.php" style="margin:0;">
-                    <input type="hidden" name="job_id" value="<?php echo $job['job_ID']; ?>">
-                    <button class="remove-saved-btn" type="submit">حذف</button>
-                </form>
+                <button class="remove-saved-btn" data-job-id="<?php echo $job['job_ID']; ?>">حذف</button>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+<script src="headerDash.js"></script>
+<script>
+// حذف وظيفة محفوظة عبر AJAX
+  document.querySelectorAll('.remove-saved-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!confirm('هل أنت متأكد من حذف هذه الوظيفة من المحفوظات؟')) return;
+      var jobId = btn.getAttribute('data-job-id');
+      fetch('remove_saved_job.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'job_id=' + encodeURIComponent(jobId)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          // إزالة العنصر من الصفحة
+          btn.closest('.saved-job-card').remove();
+        } else {
+          alert('حدث خطأ أثناء الحذف.');
+        }
+      })
+      .catch(() => {
+        alert('حدث خطأ في الاتصال بالخادم.');
+      });
+    });
+  });
+</script>
 </body>
 </html>

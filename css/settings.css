@@ -1,0 +1,130 @@
+/* إعدادات صفحة الإعدادات بتصميم عصري وألوان هادئة متناسقة مع المواقع العربية (درجات بنفسجي/رمادي/أخضر باهت) */
+body {
+    background: linear-gradient(135deg, #f6f6fa 0%, #ececf3 100%);
+    font-family: 'Cairo', Tahoma, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.settings-container {
+    max-width: 480px;
+    margin: 48px auto 32px auto;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(120, 120, 160, 0.10), 0 1.5px 8px rgba(120, 120, 160, 0.07);
+    padding: 38px 30px 28px 30px;
+    direction: rtl;
+    position: relative;
+    overflow: hidden;
+}
+.settings-container::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: -60px;
+    width: 160px;
+    height: 160px;
+    background: linear-gradient(120deg, #b993d6 60%, #8ca6db 100%);
+    opacity: 0.09;
+    border-radius: 50%;
+    z-index: 0;
+}
+.settings-container h2 {
+    text-align: center;
+    color: #4b4453;
+    margin-bottom: 30px;
+    font-size: 2.1rem;
+    letter-spacing: 1px;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+}
+.settings-form, .change-password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.setting-group label {
+    color: #7d6fa3;
+    font-weight: 700;
+    margin-bottom: 2px;
+    font-size: 1.05rem;
+}
+.setting-group input[type="password"],
+.setting-group input[type="time"],
+.setting-group select {
+    padding: 9px 12px;
+    border: 1.5px solid #e0e0e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f7f8fd;
+    transition: border 0.2s, box-shadow 0.2s;
+    color: #222;
+}
+.setting-group input:focus,
+.setting-group select:focus {
+    border: 1.5px solid #b993d6;
+    outline: none;
+    box-shadow: 0 0 0 2px #e0e0e6;
+}
+.setting-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #7d6fa3;
+    margin-left: 8px;
+}
+.save-btn {
+    background: linear-gradient(90deg, #b993d6 60%, #8ca6db 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 0;
+    font-size: 1.13rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(140,166,219,0.08);
+}
+.save-btn:hover {
+    background: linear-gradient(90deg, #8ca6db 60%, #b993d6 100%);
+    box-shadow: 0 4px 16px rgba(140,166,219,0.13);
+}
+hr {
+    margin: 36px 0 20px 0;
+    border: none;
+    border-top: 1.5px solid #e5e7eb;
+}
+.change-password-form h3 {
+    color: #4b4453;
+    margin-bottom: 13px;
+    font-size: 1.18rem;
+    text-align: right;
+    font-weight: 700;
+}
+.msg {
+    color: #e11d48;
+    font-size: 1rem;
+    margin-top: 8px;
+    min-height: 22px;
+    font-weight: 600;
+}
+.setting-group span {
+    color: #64748b;
+    font-size: 0.98rem;
+    margin-top: 2px;
+}
+@media (max-width: 600px) {
+    .settings-container {
+        padding: 14px 3px 10px 3px;
+    }
+    .settings-container h2 {
+        font-size: 1.3rem;
+    }
+}

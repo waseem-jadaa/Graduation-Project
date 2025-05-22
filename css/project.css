@@ -1813,7 +1813,6 @@ nav {
 
 /* User Profile Menu */
 .user-profile-menu {
-    display: none;
     position: absolute;
     background: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1823,16 +1822,7 @@ nav {
     z-index: 10;
 }
 .user-profile:hover .user-profile-menu {
-    display: block;
-}
-.user-profile-menu a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: black;
-}
-.user-profile-menu a:hover {
-    background: #f0f0f0;
+    /* تم حذف display: none */
 }
 
 /* sidebar */

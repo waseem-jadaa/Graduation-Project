@@ -154,7 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <?php
-include 'headerProfile.php';
+// استبدال هيدر البروفايل بهيدر لوحة التحكم
+include 'headerDash.php';
 ?>
 
 <div class="profile-container">
@@ -209,6 +210,7 @@ include 'headerProfile.php';
     </form>
 </div>
 
+<script src="headerDash.js"></script>
 <script>
 // Add edit functionality for the form
 const editBtn = document.getElementById('editBtn');

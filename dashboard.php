@@ -25,6 +25,16 @@ try {
     $user_name = 'مستخدم';
     $role = '';
 }
+
+// جلب عدد الإشعارات غير المقروءة
+$unread_notifications = 0;
+try {
+    $stmt = $conn->prepare('SELECT COUNT(*) FROM notifications WHERE user_id = :user_id AND is_read = 0');
+    $stmt->execute([':user_id' => $user_id]);
+    $unread_notifications = $stmt->fetchColumn();
+} catch (PDOException $e) {
+    $unread_notifications = 0;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -49,15 +59,20 @@ try {
         <section class="welcome-card">
           <div class="welcome-content">
             <h1>مرحباً بعودتك، <?php echo $user_name; ?>!</h1>
-            <p>لديك 3 وظائف مقترحة و 5 رسائل جديدة</p>
+            <p>
+              <?php if ($unread_notifications > 0): ?>
+                <span style="color:antiquewhite;font-weight:bold;">لديك <?php echo $unread_notifications; ?> إشعار جديد غير مقروء</span>
+              <?php else: ?>
+                لا توجد إشعارات جديدة حالياً.
+              <?php endif; ?>
+            </p>
             <?php if ($role === 'job_seeker'): ?>
               <button class="btn-explore" id="btn-explore-jobs">استكشف الوظائف الجديدة</button>
             <?php endif; ?>
             <?php if ($role === 'employer'): ?>
-            <button class="btn-job-announcement" onclick="location.href='job_post.php'">نشر وظيفة</button>
+              <button class="btn-job-announcement" onclick="location.href='job_post.php'">نشر وظيفة</button>
             <?php endif; ?>
           </div>
-          
         </section>
 
         <!-- نافذة منبثقة لعرض الوظائف الجديدة -->
@@ -257,46 +272,8 @@ try {
             <h2>آخر الأنشطة</h2>
           </div>
           
-          <div class="activity-timeline">
-            <div class="activity-item">
-              <div class="activity-icon">
-                <i class="fas fa-briefcase"></i>
-              </div>
-              <div class="activity-content">
-                <p>تم قبول طلبك لوظيفة "نجار" في شركة الامانة للنجارة</p>
-                <span class="activity-time">منذ ساعتين</span>
-              </div>
-            </div>
-            
-            <div class="activity-item">
-              <div class="activity-icon">
-                <i class="fas fa-comment"></i>
-              </div>
-              <div class="activity-content">
-                <p>لديك اتصال من شركة الامل للالمنيوم </p>
-                <span class="activity-time">منذ 5 ساعات</span>
-              </div>
-            </div>
-            
-            <div class="activity-item">
-              <div class="activity-icon">
-                <i class="fas fa-user-plus"></i>
-              </div>
-              <div class="activity-content">
-                <p>قام محمد علي بمشاهدة ملفك الشخصي</p>
-                <span class="activity-time">منذ يوم واحد</span>
-              </div>
-            </div>
-            
-            <div class="activity-item">
-              <div class="activity-icon">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="activity-content">
-                <p>حصلت على تقييم جديد 5 نجوم من صاحب العمل</p>
-                <span class="activity-time">منذ يومين</span>
-              </div>
-            </div>
+          <div class="activity-timeline" id="activity-timeline">
+            <div style="text-align:center;color:#888;">جاري التحميل...</div>
           </div>
         </section>
       </div>
@@ -574,6 +551,36 @@ try {
               });
           });
         }
+
+        // جلب الأنشطة ديناميكيًا
+        function renderActivityItem(activity) {
+          let icon = activity.icon || 'fas fa-bell';
+          let msg = activity.message || '';
+          let time = activity.time_ago || activity.created_at || '';
+          return `<div class="activity-item">
+            <div class="activity-icon">
+              <i class="${icon}"></i>
+            </div>
+            <div class="activity-content">
+              <p>${msg}</p>
+              <span class="activity-time">${time}</span>
+            </div>
+          </div>`;
+        }
+        fetch('get_notifications.php')
+          .then(res => res.json())
+          .then(list => {
+            let html = '';
+            if (Array.isArray(list) && list.length > 0) {
+              html = list.map(renderActivityItem).join('');
+            } else {
+              html = '<div style="text-align:center;color:#888;">لا يوجد أنشطة حديثة.</div>';
+            }
+            document.getElementById('activity-timeline').innerHTML = html;
+          })
+          .catch(() => {
+            document.getElementById('activity-timeline').innerHTML = '<div style="text-align:center;color:#888;">تعذر جلب الأنشطة.</div>';
+          });
       });
     </script>
   </body>

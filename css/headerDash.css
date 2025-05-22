@@ -113,7 +113,7 @@
   box-shadow: 0 2px 8px var(--sidebar-shadow);
   z-index: 1003;
 }
-.user-profile.active .user-profile-menu {
+.user-profile-menu.show {
   display: block;
 }
 .user-profile-menu a {
