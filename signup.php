@@ -167,29 +167,6 @@
           </div>
 
           <div class="form-section" style="padding: 20px;">
-            <h2 class="section-title">تحقق الهوية</h2>
-            <div class="form-group file-upload">
-              <label for="id_photo">صورة الهوية الشخصية</label>
-              <div class="upload-area" style="font-size: 0.9rem; padding: 0.5rem;">
-                <input
-                  type="file"
-                  id="id_photo"
-                  name="id_photo"
-                  accept="image/*"
-                  required
-                />
-                <i class="fas fa-id-card"></i>
-                <span>قم بتحميل صورة واضحة للهوية الشخصية</span>
-              </div>
-              <p class="upload-hint">سيتم استخدام هذه الصورة للتحقق من هويتك</p>
-              
-              <div id="id-photo-preview" style="display: none; margin-top: 10px;">
-                <img src="" alt="ID Preview" style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 5px;" />
-              </div>
-            </div>
-          </div>
-
-          <div class="form-section" style="padding: 20px;">
             <h2 class="section-title">الصورة الشخصية</h2>
             <div class="form-group file-upload">
                 <label for="profile_photo">الصورة الشخصية</label>
@@ -318,25 +295,6 @@
       document.getElementById("current-year").textContent =
         new Date().getFullYear();
 
-     
-      document.getElementById('id_photo').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const previewContainer = document.getElementById('id-photo-preview');
-        const previewImage = previewContainer.querySelector('img');
-
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            previewImage.src = e.target.result;
-            previewContainer.style.display = 'block';
-          };
-          reader.readAsDataURL(file);
-        } else {
-          previewImage.src = '';
-          previewContainer.style.display = 'none';
-        }
-      });
-
       // Add profile photo preview functionality
       document.getElementById('profile_photo').addEventListener('change', function(event) {
         const file = event.target.files[0];
@@ -354,19 +312,6 @@
           previewImage.src = '';
           previewContainer.style.display = 'none';
         }
-      });
-
-      
-      window.addEventListener('load', function() {
-        const selectedAccountType = document.querySelector(".account-type-selector input:checked").value;
-        updateRequiredFields(selectedAccountType);
-        const fileInput = document.getElementById('id_photo');
-        const previewContainer = document.getElementById('id-photo-preview');
-        const previewImage = previewContainer.querySelector('img');
-
-        fileInput.value = '';
-        previewImage.src = '';
-        previewContainer.style.display = 'none';
       });
 
     </script>
@@ -463,18 +408,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             handleError("Database Error: " . $e->getMessage());
         }
 
-        // Handle ID photo upload -- > not done (Not well examined)
-        $idPhotoPath = null;
-        if (isset($_FILES['id_photo']) && $_FILES['id_photo']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploads/id_photos/';
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-            $fileExtension = pathinfo($_FILES['id_photo']['name'], PATHINFO_EXTENSION);
-            $idPhotoPath = $uploadDir . $userId . '_id.' . $fileExtension;
-            move_uploaded_file($_FILES['id_photo']['tmp_name'], $idPhotoPath);
-        }
-
         // Handle profile photo upload
         $profilePhotoPath = null;
         if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
@@ -498,8 +431,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $skills = $_POST['skills'];
                 $experience = $_POST['experience'];
 
-                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, profile_photo) 
-                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :profile_photo)";
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, profile_photo) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :profile_photo)";
                 $stmtProfile = $conn->prepare($sqlProfile);
                 $stmtProfile->execute([
                     ':user_id' => $userId,
@@ -509,15 +442,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':skills' => $skills,
                     ':location' => $location,
                     ':experience' => $experience,
-                    ':id_photo' => $idPhotoPath,
                     ':profile_photo' => $profilePhotoPath
                 ]);
                 logDebug("Worker profile inserted successfully");
             } else {
-                // Employer profile: استخدم فقط مجال العمل (profession) في bio، skills فارغ، experience صفر
+                // Employer profile
                 $profession = $_POST['profession'];
-                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, id_photo, profile_photo) 
-                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :id_photo, :profile_photo)";
+                $sqlProfile = "INSERT INTO profile (User_ID, first_name, last_name, bio, skills, location, experience, profile_photo) 
+                              VALUES (:user_id, :first_name, :last_name, :bio, :skills, :location, :experience, :profile_photo)";
                 $stmtProfile = $conn->prepare($sqlProfile);
                 $stmtProfile->execute([
                     ':user_id' => $userId,
@@ -527,7 +459,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':skills' => '',
                     ':location' => $location,
                     ':experience' => '0',
-                    ':id_photo' => $idPhotoPath,
                     ':profile_photo' => $profilePhotoPath
                 ]);
                 logDebug("Employer profile inserted successfully");

@@ -34,6 +34,18 @@ if (isset($_SESSION['user_id'])) {
         $unread_notifications = 0;
     }
 }
+
+// جلب حالة التوثيق
+$verification_status = null;
+if (isset($_SESSION['user_id'])) {
+    try {
+        $stmt = $conn->prepare('SELECT verification_status FROM user WHERE User_ID = :user_id');
+        $stmt->execute([':user_id' => $_SESSION['user_id']]);
+        $verification_status = $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        $verification_status = null;
+    }
+}
 ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/headerDash.css">
@@ -101,7 +113,11 @@ if (isset($_SESSION['user_id'])) {
         </div>
         <div class="user-profile" id="userProfileMenuBtn">
           <img src="<?php echo $profile_photo; ?>" alt="صورة المستخدم">
-          <span><?php echo $user_name; ?></span>
+          <span><?php echo $user_name; ?>
+            <?php if ($verification_status === 'verified'): ?>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg" alt="موثق" style="width:20px;height:20px;margin-right:3px;vertical-align:middle;" title="حساب موثق">
+            <?php endif; ?>
+          </span>
           <span id="userProfileArrow" style="cursor:pointer;"><i class="fas fa-chevron-down"></i></span>
           <div class="user-profile-menu" id="userProfileMenu">
             <a href="profile.php"><i class="fas fa-user"></i> الملف الشخصي</a>

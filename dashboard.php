@@ -220,7 +220,7 @@ try {
               <?php foreach ($suggested_jobs as $job): ?>
                 <div class="job-card">
                   <div class="job-header">
-                    <img src="image/n.png" alt="شعار الشركة" class="company-logo">
+                    <img src="https://img.icons8.com/color/48/briefcase--v1.png" alt="وظائف عامة" class="company-logo">
                     <div class="job-title">
                       <h3><?php echo htmlspecialchars($job['title']); ?></h3>
                       <p><?php echo htmlspecialchars($job['description']); ?></p>

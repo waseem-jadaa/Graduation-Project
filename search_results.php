@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'admin_only_redirect.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();

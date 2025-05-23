@@ -42,7 +42,7 @@ $searchTerm = htmlspecialchars($searchTerm);
                     jobBox.className = 'job-card';
                     jobBox.innerHTML = `
                         <div class="job-header">
-                            <img src="image/n.png" alt="شعار الشركة" class="company-logo">
+                            <img src="https://img.icons8.com/color/48/briefcase--v1.png" alt="وظائف عامة" class="company-logo">
                             <div class="job-title">
                                 <h3>${job.title}</h3>
                                 <p>${job.description}</p>

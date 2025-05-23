@@ -62,6 +62,11 @@ $email = $email ?? htmlspecialchars($profile['email'] ?? 'غير متوفر');
 // استخدم قيمة role الحقيقية من قاعدة البيانات (employer/job_seeker)
 $role = $profile['role'] ?? ($role ?? 'غير متوفر');
 
+// جلب حالة التوثيق
+$stmt = $conn->prepare('SELECT verification_status FROM user WHERE User_ID = :user_id');
+$stmt->execute([':user_id' => $user_id]);
+$verification_status = $stmt->fetchColumn() ?: 'not_verified';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and validate input data
     $first_name = htmlspecialchars($_POST['first_name'] ?? '');
@@ -169,10 +174,24 @@ include 'headerDash.php';
                     <i class="fas fa-camera" style="font-size:22px;color:#444;"></i>
                 </span>
             </label>
-            <h2 style="margin-bottom: 0.2em;"><?php echo $first_name . ' ' . $last_name; ?></h2>
+            <h2 style="margin-bottom: 0.2em;display:inline-block;">
+                <?php echo $first_name . ' ' . $last_name; ?>
+                <?php if ($verification_status === 'verified'): ?>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg" alt="موثق" style="width: 30px;height:30px;margin-right:3px;vertical-align:middle;" title="حساب موثق">
+                <?php endif; ?>
+            </h2>
             <h3 style="color:antiquewhite; font-size: 1.1em; margin-top: 0; margin-bottom: 1em; font-weight: normal;">
                 <?php echo $email; ?>
             </h3>
+            <?php if ($verification_status !== 'verified'): ?>
+                <div style="margin-top:10px;">
+                    <a href="verification.php" style="color:#1da1f2;text-decoration:underline;font-weight:bold;display:inline-block;">
+                        <span style="font-size:1.1em;">🔒 اضغط هنا لتوثيق حسابك</span>
+                    </a>
+                </div>
+            <?php else: ?>
+                <div style="margin-top:10px;color:#1da1f2;font-weight:bold;">موثق</div>
+            <?php endif; ?>
         </div>
         <div class="profile-details" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
             <div style="flex: 1 1 200px; min-width: 200px;">

@@ -21,7 +21,7 @@
       $password = $_POST['password'];
 
       try {
-          $sql = "SELECT User_ID, password FROM user WHERE email = :email";
+          $sql = "SELECT User_ID, password, role FROM user WHERE email = :email";
           $stmt = $conn->prepare($sql);
           $stmt->execute([':email' => $email]);
 
@@ -30,7 +30,11 @@
           if ($user && password_verify($password, $user['password'])) {
               session_start();
               $_SESSION['user_id'] = $user['User_ID'];
-              header('Location: dashboard.php');
+              if ($user['role'] === 'admin') {
+                  header('Location: admin_verifications.php');
+              } else {
+                  header('Location: dashboard.php');
+              }
               exit();
           } else {
               echo "Invalid email or password.";

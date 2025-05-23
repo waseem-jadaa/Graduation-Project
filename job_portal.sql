@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3308
--- Generation Time: May 18, 2025 at 09:35 PM
+-- Generation Time: May 23, 2025 at 03:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,7 +44,7 @@ INSERT INTO `application` (`application_ID`, `job_ID`, `user_ID`, `status`, `emp
 (19, NULL, 12, 'accepted', 9),
 (22, NULL, 19, 'accepted', 9),
 (25, NULL, 21, 'pending', 22),
-(26, NULL, 19, 'pending', 23),
+(26, NULL, 19, 'accepted', 23),
 (27, 15, 19, 'accepted', NULL),
 (28, NULL, 12, 'accepted', 23),
 (29, NULL, 20, 'accepted', 23),
@@ -53,7 +53,8 @@ INSERT INTO `application` (`application_ID`, `job_ID`, `user_ID`, `status`, `emp
 (32, 16, 21, 'accepted', NULL),
 (33, NULL, 20, 'accepted', 24),
 (34, NULL, 12, 'pending', 23),
-(35, 17, 20, 'accepted', NULL);
+(35, 17, 20, 'accepted', NULL),
+(36, 15, 12, 'accepted', NULL);
 
 -- --------------------------------------------------------
 
@@ -150,18 +151,18 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `link`, `is_read`, `cre
 (11, 20, 'تم قبول طلبك لوظيفة: شوفير تكسي ', 'jobs.php', 0, '2025-05-15 22:18:17'),
 (13, 12, 'تم قبول طلبك لوظيفة: تركيب كرميد ', 'jobs.php', 1, '2025-05-16 16:06:28'),
 (23, 19, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 0, '2025-05-16 17:29:04'),
-(24, 20, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 0, '2025-05-16 17:29:07'),
+(24, 20, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 1, '2025-05-16 17:29:07'),
 (25, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:11:23'),
 (26, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:12:18'),
 (38, 12, 'تم قبول طلبك لوظيفة: موسرجي', 'jobs.php', 1, '2025-05-16 18:20:22'),
-(41, 20, 'تم قبول طلبك لوظيفة: بستاني ', 'jobs.php', 0, '2025-05-16 18:44:03'),
+(41, 20, 'تم قبول طلبك لوظيفة: بستاني ', 'jobs.php', 1, '2025-05-16 18:44:03'),
 (42, 19, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-16 18:44:58'),
-(45, 19, 'تم قبول طلبك لوظيفة: شوفير تكسي ', 'jobs.php', 0, '2025-05-16 18:47:02'),
+(45, 19, 'تم قبول طلبك لوظيفة: شوفير تكسي ', 'jobs.php', 1, '2025-05-16 18:47:02'),
 (47, 12, 'تم قبول طلبك لوظيفة: بستاني ', 'jobs.php', 1, '2025-05-16 18:50:18'),
 (48, 21, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 0, '2025-05-16 19:10:53'),
-(49, 19, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 0, '2025-05-17 00:17:49'),
+(49, 19, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-17 00:17:49'),
 (50, 24, 'تقدم شخص جديد لوظيفة: فرقة سفرجية . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=15', 1, '2025-05-17 00:28:02'),
-(51, 19, 'تم قبول طلبك لوظيفة: فرقة سفرجية ', 'jobs.php', 0, '2025-05-17 00:30:06'),
+(51, 19, 'تم قبول طلبك لوظيفة: فرقة سفرجية ', 'jobs.php', 1, '2025-05-17 00:30:06'),
 (52, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-17 22:44:31'),
 (53, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-17 22:48:43'),
 (54, 20, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-17 22:49:18'),
@@ -175,7 +176,11 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `link`, `is_read`, `cre
 (62, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-18 21:47:06'),
 (63, 12, 'لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.', 'manage_professional_requests.php', 1, '2025-05-18 22:17:07'),
 (64, 24, 'تقدم شخص جديد لوظيفة: صانعة حلوى . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=17', 1, '2025-05-18 22:27:15'),
-(65, 20, 'تم قبول طلبك لوظيفة: صانعة حلوى ', 'jobs.php', 1, '2025-05-18 22:29:33');
+(65, 20, 'تم قبول طلبك لوظيفة: صانعة حلوى ', 'jobs.php', 1, '2025-05-18 22:29:33'),
+(66, 23, 'تم قبول طلبك من المهني.', '', 1, '2025-05-19 19:30:59'),
+(67, 24, 'تقدم شخص جديد لوظيفة: فرقة سفرجية . يمكنك قبول أو رفض الطلب.', 'manage_applications.php?job_id=15', 1, '2025-05-19 20:53:43'),
+(68, 12, 'تم قبول طلبك لوظيفة: فرقة سفرجية ', 'jobs.php', 1, '2025-05-19 20:54:17'),
+(69, 19, 'تم رفض طلب توثيق حسابك. سبب الرفض: عدم تطابق المعلومات ', NULL, 1, '2025-05-23 16:04:45');
 
 -- --------------------------------------------------------
 
@@ -216,7 +221,6 @@ CREATE TABLE `profile` (
   `skills` text DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `experience` text DEFAULT NULL,
-  `id_photo` varchar(255) DEFAULT NULL,
   `profile_photo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -224,13 +228,15 @@ CREATE TABLE `profile` (
 -- Dumping data for table `profile`
 --
 
-INSERT INTO `profile` (`profile_ID`, `User_ID`, `first_name`, `last_name`, `bio`, `skills`, `location`, `experience`, `id_photo`, `profile_photo`) VALUES
-(3, 12, 'mosab ', 'mashaqi', 'قصارة', 'فولخ , حجر', 'ياصيد', '5', 'uploads/id_photos/12_id.webp', NULL),
-(10, 19, 'mayar', 'elyan', 'مصممة ازياء ', 'تصميم بدلات اعراس , تصميم ستايلات حديثة للجنسين ', 'جيوس', '7', 'uploads/id_photos/19_id.png', 'uploads/profile_photos/19_profile.jpg'),
-(11, 20, 'Ayman', 'Qadome', 'سياحة وسفر ', 'سياحة وسفر ', 'كفر قدوم', '21', 'uploads/id_photos/20_id.png', 'uploads/profile_photos/20_profile.jpg'),
-(12, 21, 'مالك', 'جدع', 'حلاق', 'حلاقة شعر لجميع الفئات العمرية , حلاقة عريس , تنظيف بشرة , سشوار , تحديد لحية ', 'قلقيلية - حبلة', '5', 'uploads/id_photos/21_id.jpg', 'uploads/profile_photos/21_profile.jpg'),
-(14, 23, 'waseem', 'Jadaa', 'مقاول اعمال حرة , جميع المجالات', '', 'جبع - رام الله', '0', 'uploads/id_photos/23_id.jpg', 'uploads/profile_photos/23_profile.jpg'),
-(15, 24, 'محمد', 'محمد', 'ادارة اعراس ', '', 'جنين', '0', 'uploads/id_photos/24_id.jpg', 'uploads/profile_photos/24_profile.jpg');
+INSERT INTO `profile` (`profile_ID`, `User_ID`, `first_name`, `last_name`, `bio`, `skills`, `location`, `experience`, `profile_photo`) VALUES
+(3, 12, 'mosab ', 'mashaqi', 'قصارة', 'فولخ , حجر', 'ياصيد', '5', NULL),
+(10, 19, 'mayar', 'elyan', 'مصممة ازياء ', 'تصميم بدلات اعراس , تصميم ستايلات حديثة للجنسين ', 'جيوس', '7', 'uploads/profile_photos/19_profile.jpg'),
+(11, 20, 'Ayman', 'Qadome', 'سياحة وسفر ', 'سياحة وسفر ', 'كفر قدوم', '21', 'uploads/profile_photos/20_profile.jpg'),
+(12, 21, 'مالك', 'جدع', 'حلاق', 'حلاقة شعر لجميع الفئات العمرية , حلاقة عريس , تنظيف بشرة , سشوار , تحديد لحية ', 'قلقيلية - حبلة', '5', 'uploads/profile_photos/21_profile.jpg'),
+(14, 23, 'waseem', 'Jadaa', 'مقاول اعمال حرة , جميع المجالات', '', 'جبع - رام الله', '0', 'uploads/profile_photos/23_profile.jpg'),
+(15, 24, 'محمد', 'محمد', 'ادارة اعراس ', '', 'جنين', '0', 'uploads/profile_photos/24_profile.jpg'),
+(16, 29, 'كمال', 'خليل', 'مقاول اعمال حرة ', '', 'قلقيلية', '0', 'uploads/profile_photos/29_profile.png'),
+(17, 30, 'رامي', 'جدع', 'الزراعة', 'رش المبيدات الحشرية , رش المزروعات , تتبع الري للمزروعات ', 'حبلة', '25', 'uploads/profile_photos/30_profile.jpg');
 
 -- --------------------------------------------------------
 
@@ -276,20 +282,25 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('job_seeker','employer') NOT NULL
+  `role` enum('job_seeker','employer','admin') NOT NULL,
+  `verification_status` enum('not_verified','pending','verified','rejected') DEFAULT 'not_verified',
+  `verification_note` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`User_ID`, `name`, `email`, `password`, `role`) VALUES
-(12, 'mosab mashaqi', 's12029151@stu.najah.edu', '$2y$10$dH3On4IRQ.bfKIRksuNRLuVutz2PlpxyMXKnE3r999MeQzQ/0Kd.G', 'job_seeker'),
-(19, 'mayar elyan', 'mayarelyan2@gmail.com', '$2y$10$VqSZM1G6/RGevQJILWHUIuEgcEO8XD39DOEbzeBo025YiYK2bV/oS', 'job_seeker'),
-(20, 'Ayman Qadome', 'adnansleem370@gmail.com', '$2y$10$elgk53iYroeFKKZl4v0mMe9oYpdq5v70MjGZxQRH16HTa6J7Ous3K', 'job_seeker'),
-(21, 'مالك جدع', 'malek.jada@gmail.com', '$2y$10$x/.gWKGcsj6JPOU8Z5REUO.1mDMKojAuJOzErCAEF1AZkVJs/at06', 'job_seeker'),
-(23, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$gKfYflfEUaOSltcS2u3dSu7gHwKGE9k/jreVebNVEmHYND85L15ZG', 'employer'),
-(24, 'محمد محمد', 'mohamad.790@gmail.com', '$2y$10$4Rj.05sfSG3nIfAjbzcmi.rw/Vz046YY4IAFlhamyKfKYz5rxNUpu', 'employer');
+INSERT INTO `user` (`User_ID`, `name`, `email`, `password`, `role`, `verification_status`, `verification_note`) VALUES
+(12, 'mosab mashaqi', 's12029151@stu.najah.edu', '$2y$10$dH3On4IRQ.bfKIRksuNRLuVutz2PlpxyMXKnE3r999MeQzQ/0Kd.G', 'job_seeker', 'not_verified', NULL),
+(19, 'mayar elyan', 'mayarelyan2@gmail.com', '$2y$10$VqSZM1G6/RGevQJILWHUIuEgcEO8XD39DOEbzeBo025YiYK2bV/oS', 'job_seeker', 'rejected', 'عدم تطابق المعلومات '),
+(20, 'Ayman Qadome', 'adnansleem370@gmail.com', '$2y$10$elgk53iYroeFKKZl4v0mMe9oYpdq5v70MjGZxQRH16HTa6J7Ous3K', 'job_seeker', 'not_verified', NULL),
+(21, 'مالك جدع', 'malek.jada@gmail.com', '$2y$10$x/.gWKGcsj6JPOU8Z5REUO.1mDMKojAuJOzErCAEF1AZkVJs/at06', 'job_seeker', 'verified', NULL),
+(23, 'waseem Jadaa', 'rowaid.jadaa@gmail.com', '$2y$10$gKfYflfEUaOSltcS2u3dSu7gHwKGE9k/jreVebNVEmHYND85L15ZG', 'employer', 'verified', NULL),
+(24, 'محمد محمد', 'mohamad.790@gmail.com', '$2y$10$4Rj.05sfSG3nIfAjbzcmi.rw/Vz046YY4IAFlhamyKfKYz5rxNUpu', 'employer', 'not_verified', NULL),
+(25, 'Admin', 'admin@forsa-pal.com', '$2y$10$OCL4HUKtKi0GRKvUNbg5Ku4vWKUB1MqZQLvCoyBPYZpHtIaJAWnXi', 'admin', 'verified', NULL),
+(29, 'كمال خليل', 'kamal.100@gmail.com', '$2y$10$J.ea9eOxYfY07eP1RnpGPefzMADc4TTO0kuD6qYcBRv01Sw6wXveK', 'employer', 'not_verified', NULL),
+(30, 'رامي جدع', 'rami.jadaa@gmail.com', '$2y$10$Te0AEM/BcVs7JX24fYEnieI1JZx5yoa3vHLpDI20vzFm0Ez77hs2C', 'job_seeker', 'not_verified', NULL);
 
 -- --------------------------------------------------------
 
@@ -301,6 +312,33 @@ CREATE TABLE `user_skill` (
   `user_ID` int(11) NOT NULL,
   `skill_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_verification`
+--
+
+CREATE TABLE `user_verification` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `doc_type` varchar(20) NOT NULL,
+  `doc_path` varchar(255) NOT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `note` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `reviewed_at` datetime DEFAULT NULL,
+  `legal_name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_verification`
+--
+
+INSERT INTO `user_verification` (`id`, `user_id`, `doc_type`, `doc_path`, `status`, `note`, `created_at`, `reviewed_at`, `legal_name`) VALUES
+(1, 23, 'ID', 'uploads/verification_docs/23_1747928179.jpg', 'accepted', NULL, '2025-05-22 18:36:19', '2025-05-22 19:28:22', ''),
+(2, 21, 'ID', 'uploads/verification_docs/21_1748002601.jpg', 'accepted', NULL, '2025-05-23 15:16:41', '2025-05-23 15:23:03', 'مالك جميل عبدرحيم جدع'),
+(4, 19, 'ID', 'uploads/verification_docs/19_1748005456.jpg', 'rejected', 'عدم تطابق المعلومات ', '2025-05-23 16:04:16', '2025-05-23 16:04:45', 'ميار عليان');
 
 --
 -- Indexes for dumped tables
@@ -400,6 +438,13 @@ ALTER TABLE `user_skill`
   ADD KEY `skill_ID` (`skill_ID`);
 
 --
+-- Indexes for table `user_verification`
+--
+ALTER TABLE `user_verification`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -407,7 +452,7 @@ ALTER TABLE `user_skill`
 -- AUTO_INCREMENT for table `application`
 --
 ALTER TABLE `application`
-  MODIFY `application_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `application_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `job`
@@ -431,7 +476,7 @@ ALTER TABLE `message`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `professional_ratings`
@@ -443,13 +488,13 @@ ALTER TABLE `professional_ratings`
 -- AUTO_INCREMENT for table `profile`
 --
 ALTER TABLE `profile`
-  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `saved_jobs`
 --
 ALTER TABLE `saved_jobs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `skill`
@@ -461,7 +506,13 @@ ALTER TABLE `skill`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `User_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `user_verification`
+--
+ALTER TABLE `user_verification`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -533,6 +584,12 @@ ALTER TABLE `saved_jobs`
 ALTER TABLE `user_skill`
   ADD CONSTRAINT `user_skill_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_skill_ibfk_2` FOREIGN KEY (`skill_ID`) REFERENCES `skill` (`skill_ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `user_verification`
+--
+ALTER TABLE `user_verification`
+  ADD CONSTRAINT `user_verification_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
