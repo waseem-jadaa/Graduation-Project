@@ -47,8 +47,8 @@ $searchTerm = htmlspecialchars($searchTerm);
                                 <h3>${job.title}</h3>
                                 <p>${job.description}</p>
                             </div>
-                            <div class="job-save">
-                                <i class="far fa-bookmark"></i>
+                            <div class="job-save" data-job-id="${job.job_ID}" data-saved="${job.saved ? '1' : '0'}">
+                                <i class="${job.saved ? 'fas' : 'far'} fa-bookmark"></i>
                             </div>
                         </div>
                         <div class="job-details">
@@ -61,6 +61,71 @@ $searchTerm = htmlspecialchars($searchTerm);
                         </div>
                     `;
                     jobsContainer.appendChild(jobBox);
+                });
+
+                // إضافة منطق الحفظ/إزالة الحفظ للوظائف
+                document.querySelectorAll('.job-save').forEach(btn => {
+                    // تفعيل اللون عند الحفظ
+                    if (btn.dataset.saved === '1') {
+                        btn.classList.add('saved');
+                        btn.querySelector('i').classList.remove('far');
+                        btn.querySelector('i').classList.add('fas');
+                    }
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var jobId = btn.getAttribute('data-job-id');
+                        if (!jobId) {
+                            alert('معرف الوظيفة غير متوفر.');
+                            return;
+                        }
+                        if (btn.classList.contains('saved')) {
+                            // إزالة الحفظ
+                            fetch('remove_saved_job.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'job_id=' + encodeURIComponent(jobId)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    btn.classList.remove('saved');
+                                    btn.querySelector('i').classList.remove('fas');
+                                    btn.querySelector('i').classList.add('far');
+                                    btn.dataset.saved = '0';
+                                } else {
+                                    alert('حدث خطأ أثناء إزالة الحفظ.');
+                                }
+                            })
+                            .catch(() => {
+                                alert('حدث خطأ في الاتصال بالخادم.');
+                            });
+                        } else {
+                            // إضافة الحفظ
+                            fetch('save_job.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'job_id=' + encodeURIComponent(jobId)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    btn.classList.add('saved');
+                                    btn.querySelector('i').classList.remove('far');
+                                    btn.querySelector('i').classList.add('fas');
+                                    btn.dataset.saved = '1';
+                                } else if (data.error === 'already_saved') {
+                                    alert('هذه الوظيفة محفوظة بالفعل.');
+                                } else if (data.error === 'unauthorized') {
+                                    alert('يجب تسجيل الدخول لحفظ الوظيفة.');
+                                } else {
+                                    alert('حدث خطأ أثناء الحفظ.');
+                                }
+                            })
+                            .catch(() => {
+                                alert('حدث خطأ في الاتصال بالخادم.');
+                            });
+                        }
+                    });
                 });
 
                 // إضافة منطق التقديم على الوظيفة
