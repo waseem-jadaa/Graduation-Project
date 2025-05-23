@@ -76,6 +76,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
 
             <label for="job-description">الوصف:</label>
             <textarea id="job-description" name="description" required></textarea>
+            <!-- زر تحسين الوصف بالذكاء الاصطناعي بشكل عصري -->
+            <div style="margin:8px 0; display:flex; align-items:center; gap:8px; justify-content:flex-start; direction:rtl;">
+                <img src="ai-logo.svg" id="improve-desc" style="width:38px;height:38px;cursor:pointer;vertical-align:middle;filter:drop-shadow(0 2px 6px #1abc5b44);transition:transform 0.2s;" title="تحسين الوصف" onmouseover="this.style.transform='scale(1.13)'" onmouseout="this.style.transform='scale(1)'" />
+                <span id="improve-desc-text" onclick="runImproveDesc()" style="color:#6c47ff;font-weight:bold;cursor:pointer;font-size:1.08em;user-select:none;transition:color 0.2s;">تحسين الوصف</span>
+                <span id="improve-loading" style="display:none;color:#1abc5b;font-size:0.95em;margin-right:8px;">جاري التحسين...</span>
+            </div>
 
             <label for="job-location">الموقع:</label>
             <input type="text" id="job-location" name="location" required>
@@ -89,3 +95,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
 
 </body>
 </html>
+<script>
+function runImproveDesc() {
+    const desc = document.getElementById('job-description').value;
+    if (!desc.trim()) {
+        alert('يرجى إدخال وصف أولاً');
+        return;
+    }
+    document.getElementById('improve-loading').style.display = 'inline';
+    fetch('improve_description.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: desc })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.job_description) {
+            document.getElementById('job-description').value = data.job_description;
+        } else if (data.error) {
+            alert('خطأ: ' + data.error);
+        } else {
+            alert('حدث خطأ غير متوقع.');
+        }
+    })
+    .catch(() => {
+        alert('حدث خطأ أثناء الاتصال بخدمة التحسين.');
+    })
+    .finally(() => {
+        document.getElementById('improve-loading').style.display = 'none';
+    });
+}
+document.getElementById('improve-desc').onclick = runImproveDesc;
+document.getElementById('improve-desc-text').onclick = runImproveDesc;
+</script>

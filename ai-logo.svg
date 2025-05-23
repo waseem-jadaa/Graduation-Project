@@ -1,0 +1,13 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="40" height="40" rx="12" fill="#181C3A"/>
+  <text x="8" y="28" font-family="Arial Black,Arial,sans-serif" font-size="20" font-weight="bold" fill="url(#paint0_linear)">AI</text>
+  <g>
+    <path d="M13 10c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm12 2c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-7 4c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z" fill="#F7BFFF"/>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear" x1="8" y1="28" x2="32" y2="12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6C47FF"/>
+      <stop offset="1" stop-color="#7DE2FC"/>
+    </linearGradient>
+  </defs>
+</svg>
