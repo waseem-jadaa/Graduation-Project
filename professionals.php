@@ -23,18 +23,22 @@ if (!isset($_SESSION['user_id'])) {
             }
             return {role: null, user_id: null};
         }
-        async function fetchProfessionals() {
+        async function fetchProfessionals(page = 1) {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchTerm = urlParams.get('search') || '';
-                const response = await fetch(`get_professionals.php?search=${encodeURIComponent(searchTerm)}`);
-                const professionals = await response.json();
+                const response = await fetch(`get_professionals.php?search=${encodeURIComponent(searchTerm)}&page=${page}`);
+                const data = await response.json();
+                const professionals = data.professionals;
+                const totalPages = data.totalPages;
+                const currentPage = data.currentPage;
                 const professionalsContainer = document.getElementById('professionals-container');
                 professionalsContainer.innerHTML = '';
                 const userInfo = await getUserRoleAndId();
 
                 if (professionals.length === 0) {
                     professionalsContainer.innerHTML = '<p>لا توجد نتائج مطابقة.</p>';
+                    renderPagination(1, 1);
                     return;
                 }
 
@@ -154,11 +158,78 @@ if (!isset($_SESSION['user_id'])) {
                     }
                     professionalsContainer.appendChild(professionalBox);
                 });
+
+                renderPagination(currentPage, totalPages);
             } catch (error) {
                 console.error('Error fetching professionals:', error);
             }
         }
-        document.addEventListener('DOMContentLoaded', fetchProfessionals);
+
+        // دالة رسم شريط التنقل بين الصفحات
+        function renderPagination(current, total) {
+    let container = document.getElementById('pagination-container');
+    if (!container) return;
+    container.innerHTML = '';
+    if (total <= 1) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'pagination-nav';
+    nav.dir = 'rtl';
+    nav.style.display = 'inline-block';
+
+    // زر "الأول"
+    nav.appendChild(createPageBtn('الأول', 1, current === 1));
+    // زر "السابق"
+    nav.appendChild(createPageBtn('السابق', current - 1, current === 1));
+
+    // أرقام الصفحات (عرض 5 صفحات كحد أقصى)
+    let start = Math.max(1, current - 2);
+    let end = Math.min(total, current + 2);
+    if (current <= 3) end = Math.min(5, total);
+    if (current >= total - 2) start = Math.max(1, total - 4);
+    for (let i = start; i <= end; i++) {
+        nav.appendChild(createPageBtn(i, i, i === current, true));
+    }
+
+    // زر "التالي"
+    nav.appendChild(createPageBtn('التالي', current + 1, current === total, false, true));
+    // زر "الأخير"
+    nav.appendChild(createPageBtn('الأخير', total, current === total, false, true));
+
+    container.appendChild(nav);
+}
+
+        function createPageBtn(text, page, disabled, isNumber) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'pagination-btn';
+            btn.textContent = text;
+            
+            // تحديد ما إذا كان الزر هو زر تنقل (الأول، السابق، التالي، الأخير)
+            const isNavBtn = ['الأول', 'السابق', 'التالي', 'الأخير'].includes(text);
+            
+            if (isNumber && disabled) {
+                btn.classList.add('active-page');
+                btn.disabled = true;
+            } 
+            else if (isNavBtn && disabled) {
+                btn.disabled = true;
+                btn.style.color = '#ccc'; // تعطيل اللون للزر
+                btn.style.cursor = 'not-allowed';
+            }
+            
+            if (!disabled) {
+                btn.addEventListener('click', function() {
+                    fetchProfessionals(page);
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+            }
+            return btn;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchProfessionals();
+        });
     </script>
 </head>
 <body class="dashboard-page">
@@ -167,11 +238,14 @@ if (!isset($_SESSION['user_id'])) {
     <main class="main-content">
         <div class="container">
             <h1>المهنيين المتاحين</h1>
-            <div id="professionals-container" class="jobs-container">
-                
-            </div>
+            <div id="professionals-container" class="jobs-container"></div>
         </div>
     </main>
+    <!-- شريط التنقل بين الصفحات في أسفل الصفحة -->
+<div id="pagination-container-wrapper" style="width:100%;display:flex;justify-content:center;position:fixed;bottom:0;left:0;z-index:100;background:#fff;padding:0;box-shadow:none;border-top:1px solid #eee;">
+    <div id="pagination-container" style="text-align:center;width:100%;"></div>
+</div>
+    <link rel="stylesheet" href="css/pagination.css">
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       var userProfile = document.querySelector('.user-profile');

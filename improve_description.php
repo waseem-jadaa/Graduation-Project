@@ -18,7 +18,7 @@ if (!$description) {
 }
 
 $payload = [
-    "model" => "gpt-4o",
+    "model" => "gpt-4.1",
     "messages" => [
         [
             "role" => "system",
@@ -26,7 +26,12 @@ $payload = [
         ],
         [
             "role" => "user",
-            "content" => "for the given text:\n\"$description\"\n\nRewrite the text as a short, concise, and professional job description suitable for a job posting (in Arabic). Add only the most important details that help a job seeker understand the requirements. At the end of the description, clearly state in a separate sentence in Arabic which of the following professions are suitable for this job, based on the description:\n\n- نجار: هو الشخص الذي يعمل في الخشب وتركب له\n- حداد: الذي يعمل في الحدادة والحديد\n- موسرجي\n- كهربائي\n- تنظيف\n- مكيانيكي\n- أخري\n\nPlease provide the response in the following JSON format:\n{\n  \"job_description\": \"<>\",\n  \"skills\": [\n    {\n      \"value\": \"حداد\",\n      \"score\": 9\n    }\n  ]\n}\n\nThis is an example — do not use exact values, but keep the format."
+            "content" => "for the given text:\n\"$description\"\n\nRewrite the text as a short,
+             concise, and professional job description suitable for a job posting (in Arabic). 
+             Add only the most important details that help a job seeker understand the requirements.
+              At the end of the description, clearly state in a separate sentence in Arabic which of the following professions are suitable for this job
+              , based on the description:\n\n- نجار: هو الشخص الذي يعمل في الخشب وتركب له\n- حداد: الذي يعمل في الحدادة والحديد\n- موسرجي\n- كهربائي\n- تنظيف\n- مكيانيكي\n- أخري\n\nPlease provide the response in the following JSON format:\n{\n  \"job_description\": \"<>\",\n  \"skills\": [\n    {\n      \"value\": \"حداد\",\n      \"score\": 9\n    }\n  ]\n}\n\n
+              This is an example — do not use exact values, but keep the format."
         ]
     ],
     "max_tokens" => 200

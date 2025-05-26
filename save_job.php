@@ -17,13 +17,20 @@ try {
     // تحقق إذا كان محفوظ مسبقاً
     $stmt = $conn->prepare('SELECT COUNT(*) FROM saved_jobs WHERE user_id = :uid AND job_id = :jid');
     $stmt->execute([':uid' => $user_id, ':jid' => $job_id]);
+    
     if ($stmt->fetchColumn() > 0) {
-        echo json_encode(['error' => 'already_saved']);
+        // إذا كان محفوظ، قم بالإزالة
+        $delete_stmt = $conn->prepare('DELETE FROM saved_jobs WHERE user_id = :uid AND job_id = :jid');
+        $delete_stmt->execute([':uid' => $user_id, ':jid' => $job_id]);
+        echo json_encode(['success' => true, 'action' => 'removed']);
+        exit;
+    } else {
+        // إذا لم يكن محفوظ، قم بالحفظ
+        $insert_stmt = $conn->prepare('INSERT INTO saved_jobs (user_id, job_id) VALUES (:uid, :jid)');
+        $insert_stmt->execute([':uid' => $user_id, ':jid' => $job_id]);
+        echo json_encode(['success' => true, 'action' => 'saved']);
         exit;
     }
-    $stmt = $conn->prepare('INSERT INTO saved_jobs (user_id, job_id) VALUES (:uid, :jid)');
-    $stmt->execute([':uid' => $user_id, ':jid' => $job_id]);
-    echo json_encode(['success' => true]);
 } catch (PDOException $e) {
     echo json_encode(['error' => 'db_error']);
 }

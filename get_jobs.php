@@ -5,9 +5,15 @@ header('Content-Type: application/json');
 
 try {
     session_start();
-    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+
     $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
     $latest = isset($_GET['latest']) ? intval($_GET['latest']) : 0;
+
+    // Pagination
+    $perPage = isset($_GET['perPage']) && is_numeric($_GET['perPage']) && $_GET['perPage'] > 0 ? (int)$_GET['perPage'] : 2;
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
+    $offset = ($page - 1) * $perPage;
 
     if ($latest) {
         // جلب آخر 5 وظائف مضافة (معالجة في حال لم يوجد عمود created_at)
@@ -18,29 +24,36 @@ try {
         exit;
     }
 
+    // Count total
     if ($searchTerm !== '') {
-        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary FROM job WHERE title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm');
-        $stmt->execute([':searchTerm' => "%$searchTerm%"]);
+        $countStmt = $conn->prepare('SELECT COUNT(*) FROM job WHERE title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm');
+        $countStmt->execute([':searchTerm' => "%$searchTerm%"]);
+        $total = $countStmt->fetchColumn();
+        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = job.job_ID AND saved_jobs.user_id = :uid) AS saved FROM job WHERE title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm LIMIT :offset, :perPage');
+        $stmt->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':uid', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
     } else {
-        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary FROM job');
+        $countStmt = $conn->prepare('SELECT COUNT(*) FROM job');
+        $countStmt->execute();
+        $total = $countStmt->fetchColumn();
+        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = job.job_ID AND saved_jobs.user_id = :uid) AS saved FROM job LIMIT :offset, :perPage');
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':uid', $user_id, PDO::PARAM_INT);
         $stmt->execute();
     }
     $jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // جلب الوظائف المحفوظة للمستخدم الحالي
-    $saved_job_ids = [];
-    if ($user_id) {
-        $stmt2 = $conn->prepare('SELECT job_id FROM saved_jobs WHERE user_id = :uid');
-        $stmt2->execute([':uid' => $user_id]);
-        foreach ($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $saved_job_ids[] = $row['job_id'];
-        }
-    }
-    // أضف حقل saved لكل وظيفة
-    foreach ($jobs as &$job) {
-        $job['saved'] = in_array($job['job_ID'], $saved_job_ids) ? 1 : 0;
-    }
-    echo json_encode($jobs);
+    $totalPages = ceil($total / $perPage);
+    echo json_encode([
+        'jobs' => $jobs,
+        'totalPages' => $totalPages,
+        'currentPage' => $page,
+        'total' => $total
+    ], JSON_PRETTY_PRINT);
 } catch (PDOException $e) {
     echo json_encode(['error' => 'Failed to fetch jobs']);
 }

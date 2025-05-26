@@ -1,0 +1,85 @@
+/* شريط التنقل بين الصفحات (pagination) /
+/ شريط تنقل صفحات أنيق ومرن ومتناسق مع تصميم الموقع */
+.pagination-nav {
+    direction: rtl;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    padding: 0;
+    margin: 0;
+    min-height: 38px;
+}
+.pagination-btn {
+    border: 1px solid #e0e0e0;
+    background: #f7f7f7;
+    color: #222;
+    font-size: 0.98em;
+    padding: 6px 16px;
+    border-radius: 18px;
+    margin: 0 2px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border 0.18s;
+    outline: none;
+    min-width: 38px;
+    min-height: 34px;
+    box-shadow: none;
+    font-family: inherit;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.pagination-btn.active-page,
+.pagination-btn.active-page:disabled {
+    background: #219653 !important;
+    color: #fff !important;
+    border: 1.5px solid #219653 !important;
+    font-weight: 600;
+    box-shadow: 0 2px 8px 0 rgba(33,150,83,0.08);
+    z-index: 1;
+    cursor: default;
+}
+.pagination-btn:disabled,
+.pagination-btn[disabled] {
+    background: #f0f0f0 !important;
+    color: #bdbdbd !important;
+    border: 1px solid #e0e0e0 !important;
+    cursor: default;
+    font-weight: 500;
+}
+.pagination-btn:not(.active-page):not(:disabled):hover {
+    background: #e8f5e9;
+    color: #219653;
+    border: 1.5px solid #219653;
+}
+#pagination-container-wrapper {
+    direction: rtl;
+    box-sizing: border-box;
+    background: transparent !important;
+    padding: 0 0 6px 0 !important;
+    box-shadow: none !important;
+    border-top: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+}
+@media (max-width: 600px) {
+    .pagination-nav {
+        gap: 0.2em;
+        min-height: 32px;
+    }
+    .pagination-btn {
+        font-size: 0.93em;
+        padding: 5px 10px;
+        min-width: 28px;
+        min-height: 28px;
+        border-radius: 13px;
+    }
+    #pagination-container-wrapper {
+        min-height: 36px;
+    }
+}
