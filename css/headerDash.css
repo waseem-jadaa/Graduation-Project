@@ -131,6 +131,13 @@
   color: #222;
   font-size: 1.3rem;
 }
+.user-profile i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+.user-profile.active i {
+  transform: rotate(180deg);
+}
 /* Sidebar Drawer Styles */
 .sidebar-drawer {
   position: fixed;

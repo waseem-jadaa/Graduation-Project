@@ -31,9 +31,14 @@ if ($stmt->fetch()) {
 // إضافة الطلب (job_ID = NULL, user_ID = المهني, employer_id = employer)
 $stmt = $conn->prepare('INSERT INTO application (job_ID, user_ID, status, employer_id) VALUES (NULL, :professional_id, "pending", :employer_id)');
 $stmt->execute([':professional_id' => $professional_id, ':employer_id' => $user_id]);
+// جلب اسم صاحب العمل
+$stmt = $conn->prepare('SELECT name FROM user WHERE User_ID = :user_id');
+$stmt->execute([':user_id' => $user_id]);
+$employer = $stmt->fetch(PDO::FETCH_ASSOC);
+$employer_name = $employer ? htmlspecialchars($employer['name']) : 'صاحب عمل';
 // إرسال إشعار للمهني
-$msg = "لديك طلب جديد من صاحب عمل. يمكنك قبول أو رفض الطلب.";
+$msg = "لديك طلب جديد من $employer_name. يمكنك قبول أو رفض الطلب.";
 $link = "manage_professional_requests.php";
-$stmt = $conn->prepare('INSERT INTO notifications (user_id, message, link, is_read, created_at) VALUES (:user_id, :message, :link, 0, NOW())');
-$stmt->execute([':user_id' => $professional_id, ':message' => $msg, ':link' => $link]);
+$stmt = $conn->prepare('INSERT INTO notifications (user_id, sender_id, message, link, is_read, created_at) VALUES (:user_id, :sender_id, :message, :link, 0, NOW())');
+$stmt->execute([':user_id' => $professional_id, ':sender_id' => $user_id, ':message' => $msg, ':link' => $link]);
 echo json_encode(['success' => true]);

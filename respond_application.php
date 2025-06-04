@@ -28,11 +28,20 @@ if ($app['employer_ID'] != $_SESSION['user_id']) {
 // تحديث حالة الطلب
 $stmt = $conn->prepare('UPDATE application SET status = :status WHERE application_ID = :app_id');
 $stmt->execute([':status' => $status, ':app_id' => $application_id]);
+// جلب اسم المهني (صاحب العمل الحالي)
+$stmt = $conn->prepare('SELECT name FROM user WHERE User_ID = :user_id');
+$stmt->execute([':user_id' => $_SESSION['user_id']]);
+$pro = $stmt->fetch(PDO::FETCH_ASSOC);
+$pro_name = $pro ? htmlspecialchars($pro['name']) : 'المهني';
+
 // إرسال إشعار للمتقدم
-$msg = $status === 'accepted' ? "تم قبول طلبك لوظيفة: {$app['title']}" : "تم رفض طلبك لوظيفة: {$app['title']}";
-$stmt = $conn->prepare('INSERT INTO notifications (user_id, message, link, is_read, created_at) VALUES (:user_id, :msg, :link, 0, NOW())');
+$msg = $status === 'accepted'
+    ? "$pro_name قبل طلبك لوظيفة: {$app['title']}"
+    : "$pro_name رفض طلبك لوظيفة: {$app['title']}";
+$stmt = $conn->prepare('INSERT INTO notifications (user_id, sender_id, message, link, is_read, created_at) VALUES (:user_id, :sender_id, :msg, :link, 0, NOW())');
 $stmt->execute([
     ':user_id' => $app['applicant_id'],
+    ':sender_id' => $_SESSION['user_id'],
     ':msg' => $msg,
     ':link' => 'jobs.php'
 ]);

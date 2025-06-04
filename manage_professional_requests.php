@@ -70,9 +70,14 @@ $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $employer_id = $row['employer_id'];
-            $msg = $action === 'accepted' ? "تم قبول طلبك من المهني." : "تم رفض طلبك من المهني.";
-            $stmt = $conn->prepare('INSERT INTO notifications (user_id, message, link, is_read, created_at) VALUES (:user_id, :message, "", 0, NOW())');
-            $stmt->execute([':user_id' => $employer_id, ':message' => $msg]);
+            // جلب اسم المهني
+            $stmt = $conn->prepare('SELECT name FROM user WHERE User_ID = :user_id');
+            $stmt->execute([':user_id' => $user_id]);
+            $pro = $stmt->fetch(PDO::FETCH_ASSOC);
+            $pro_name = $pro ? htmlspecialchars($pro['name']) : 'المهني';
+            $msg = $action === 'accepted' ? "$pro_name قام بقبول طلبك." : "$pro_name قام برفض طلبك.";
+            $stmt = $conn->prepare('INSERT INTO notifications (user_id, sender_id, message, link, is_read, created_at) VALUES (:user_id, :sender_id, :message, "", 0, NOW())');
+            $stmt->execute([':user_id' => $employer_id, ':sender_id' => $user_id, ':message' => $msg]);
         }
         echo '<script>alert("تم تحديث حالة الطلب.");window.location.href=window.location.pathname;</script>';
     }

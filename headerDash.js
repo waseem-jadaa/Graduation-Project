@@ -26,11 +26,45 @@ document.addEventListener('DOMContentLoaded', function() {
   // إظهار/إخفاء قائمة الإشعارات عند الضغط على الجرس
   const bell = document.getElementById('notificationBell');
   const dropdown = document.getElementById('notificationDropdown');
+  // مستمع واحد فقط لإغلاق القوائم المنبثقة بشكل منظم
+  // منطق موحد لإدارة القوائم المنبثقة للرسائل والإشعارات
   document.addEventListener('click', function(e) {
-    if (bell && bell.contains(e.target)) {
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    } else if (dropdown && !dropdown.contains(e.target)) {
-      dropdown.style.display = 'none';
+    const notificationBell = document.getElementById('notificationBell');
+    const messagesBell = document.getElementById('messagesBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const messagesDropdown = document.getElementById('messagesDropdown');
+    const notifMenu = document.getElementById('notifMenu');
+    
+    if (!notificationBell || !messagesBell) return;
+
+    const clickedElement = e.target;
+    const clickedNotificationBell = notificationBell.contains(clickedElement);
+    const clickedMessagesBell = messagesBell.contains(clickedElement);
+    const clickedInsideNotification = (notificationDropdown && notificationDropdown.contains(clickedElement)) || 
+                                    (notifMenu && notifMenu.contains(clickedElement));
+    const clickedInsideMessages = messagesDropdown && messagesDropdown.contains(clickedElement);
+    
+    if (clickedNotificationBell) {
+        // عند النقر على زر الإشعارات، أغلق الرسائل وقائمة المستخدم دائماً
+        if (messagesDropdown) messagesDropdown.style.display = 'none';
+        closeUserMenu(); // أغلق قائمة المستخدم
+        return;
+    }
+
+    if (clickedMessagesBell) {
+        // عند النقر على زر الرسائل، أغلق الإشعارات وقائمة المستخدم دائماً
+        if (notificationDropdown) notificationDropdown.style.display = 'none';
+        if (notifMenu) notifMenu.style.display = 'none';
+        closeUserMenu(); // أغلق قائمة المستخدم
+        return;
+    }
+
+    // إذا تم النقر خارج القوائم، أغلق الجميع
+    if (!clickedInsideNotification && !clickedInsideMessages) {
+        if (notificationDropdown) notificationDropdown.style.display = 'none';
+        if (notifMenu) notifMenu.style.display = 'none';
+        if (messagesDropdown) messagesDropdown.style.display = 'none';
+        // لا تغلق قائمة المستخدم هنا، سيتم التعامل معها بمنطقها الخاص
     }
   });
 
@@ -335,44 +369,63 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // توحيد منطق قائمة المستخدم المنسدلة لمنع التضارب
-  const userProfileArrow = document.getElementById('userProfileArrow');
-  const userProfileMenu = document.getElementById('userProfileMenu');
   const userProfileMenuBtn = document.getElementById('userProfileMenuBtn');
+  const userProfileMenu = document.getElementById('userProfileMenu');
   const logoutMenuBtn = document.getElementById('logoutMenuBtn');
 
   let userMenuOpen = false;
 
   function closeUserMenu() {
-    if (userProfileMenu && userProfileArrow) {
+    if (userProfileMenu) {
       userProfileMenu.classList.remove('show');
-      userProfileArrow.classList.remove('active');
       userMenuOpen = false;
+      // تغيير اتجاه السهم إلى الأسفل
+      const arrow = document.getElementById('userProfileArrow');
+      if (arrow) {
+        arrow.querySelector('i').style.transform = 'rotate(0deg)';
+      }
     }
   }
 
   function openUserMenu() {
-    if (userProfileMenu && userProfileArrow) {
+    if (userProfileMenu) {
       userProfileMenu.classList.add('show');
-      userProfileArrow.classList.add('active');
       userMenuOpen = true;
+      // تغيير اتجاه السهم إلى الأعلى
+      const arrow = document.getElementById('userProfileArrow');
+      if (arrow) {
+        arrow.querySelector('i').style.transform = 'rotate(180deg)';
+      }
     }
   }
 
-  if (userProfileArrow && userProfileMenu) {
-    userProfileArrow.addEventListener('click', function(e) {
+  if (userProfileMenuBtn && userProfileMenu) {
+    // إضافة مستمع حدث النقر على منطقة المستخدم بالكامل
+    userProfileMenuBtn.addEventListener('click', function(e) {
       e.stopPropagation();
+      // إغلاق جميع القوائم المنبثقة الأخرى
+      const notificationDropdown = document.getElementById('notificationDropdown');
+      const messagesDropdown = document.getElementById('messagesDropdown');
+      const notifMenu = document.getElementById('notifMenu');
+      
+      if (notificationDropdown) notificationDropdown.style.display = 'none';
+      if (messagesDropdown) messagesDropdown.style.display = 'none';
+      if (notifMenu) notifMenu.style.display = 'none';
+
       if (userMenuOpen) {
         closeUserMenu();
       } else {
         openUserMenu();
       }
     });
-    // إغلاق القائمة عند النقر خارجها فقط
+
+    // إغلاق القائمة عند النقر خارجها
     document.addEventListener('click', function(e) {
-      if (userMenuOpen && !userProfileMenu.contains(e.target) && !userProfileArrow.contains(e.target)) {
+      if (userMenuOpen && !userProfileMenu.contains(e.target) && !userProfileMenuBtn.contains(e.target)) {
         closeUserMenu();
       }
     });
+
     // إغلاق القائمة عند الضغط على Escape
     document.addEventListener('keydown', function(e) {
       if (userMenuOpen && e.key === 'Escape') {

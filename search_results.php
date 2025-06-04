@@ -40,7 +40,41 @@ $searchTerm = htmlspecialchars($searchTerm);
     <link rel="stylesheet" href="css/rating.css">
     <link rel="stylesheet" href="css/request-btn.css">
     <link rel="stylesheet" href="css/pagination.css">
-    <script src="notification.js"></script>
+    <style>
+        .job-details-full {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-right: 4px solid #007bff;
+        }
+        .job-details-full.show {
+            display: block;
+        }
+        .btn-details {
+            background-color: white;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-details:hover {
+            background-color: #f8f9fa;
+            border-color: #2ecc71;
+            color: #2ecc71;
+        }
+        .job-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body class="dashboard-page">
 <?php include 'headerDash.php'; ?>
@@ -61,11 +95,35 @@ $searchTerm = htmlspecialchars($searchTerm);
     </div>
 </main>
 <script>
+
         // إعدادات التقسيم للصفحات (عدد النتائج الكلي في الصفحة بغض النظر عن النوع)
         const RESULTS_PER_PAGE = 1; // يمكنك تغيير هذا الرقم حسب رغبتك
 
         let allResults = [];
         let currentPage = 1;
+
+        // دالة لجلب نوع الحساب من السيرفر
+        async function getUserRole() {
+            try {
+                const response = await fetch('get_user_role.php');
+                const data = await response.json();
+                return data.role;
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                return null;
+            }
+        }
+
+        async function getUserId() {
+            try {
+                const response = await fetch('get_user_role.php');
+                const data = await response.json();
+                return data.user_id;
+            } catch (error) {
+                console.error('Error fetching user ID:', error);
+                return null;
+            }
+        }
 
         function renderPagination(total, perPage, currentPage, onPageChange, wrapperId) {
             const totalPages = Math.ceil(total / perPage);
@@ -173,10 +231,25 @@ $searchTerm = htmlspecialchars($searchTerm);
                     const jobBox = document.createElement('div');
                     jobBox.className = 'job-box';
                     jobBox.innerHTML = `
-                        <h3><i class='fas fa-briefcase'></i> ${result.title}</h3>
-                        <p>${result.description}</p>
-                        <p><strong>الموقع:</strong> ${result.location}</p>
-                        <p><strong>الراتب:</strong> ${result.salary}</p>
+                        <div class="job-header">
+                            <img src="https://img.icons8.com/color/48/briefcase--v1.png" alt="وظائف عامة" class="company-logo">
+                            <div class="job-title">
+                                <h3>${result.title}</h3>
+                            </div>
+                        </div>
+                        <div class="job-details">
+                            <p><i class="fas fa-map-marker-alt"></i> ${result.location}</p>
+                            <p><i class="fas fa-money-bill-wave"></i> ${result.salary}</p>
+                            <p><i class="fas fa-building"></i> ${result.employer_name}</p>
+                        </div>
+                        <div class="job-details-full">
+                            <h4>تفاصيل الوظيفة:</h4>
+                            <p>${result.description}</p>
+                        </div>
+                        <div class="job-actions">
+                            <button class="btn-apply" data-job-id="${result.job_ID}">تقدم الآن</button>
+                            <button class="btn-details" onclick="toggleDetails(this)">التفاصيل</button>
+                        </div>
                     `;
                     jobsContainer.appendChild(jobBox);
                 } else if (result.type === 'professional') {
@@ -188,26 +261,131 @@ $searchTerm = htmlspecialchars($searchTerm);
                         <p>${result.profession}</p>
                         <p><strong>الموقع:</strong> ${result.location}</p>
                         <p><strong>الخبرة:</strong> ${result.experience}</p>
+                        <button class="request-btn" data-professional-id="${result.User_ID}">اطلبه الآن</button>
                     `;
                     professionalsContainer.appendChild(professionalBox);
                 }
             });
 
-            // إظهار أو إخفاء أقسام النتائج حسب وجود نتائج في الصفحة الحالية
-            document.getElementById('jobs-section').style.display = jobsCount > 0 ? '' : 'none';
-            document.getElementById('professionals-section').style.display = professionalsCount > 0 ? '' : 'none';
+            // إضافة منطق منع صاحب العمل من التقديم
+            setTimeout(async () => {
+                const userRole = await getUserRole();
+                const userId = await getUserId();
 
-            // شريط التنقل في أسفل الصفحة فقط
-            renderPagination(
-                allResults.length,
-                RESULTS_PER_PAGE,
-                page,
-                (newPage) => {
-                    currentPage = newPage;
-                    renderResultsPage(newPage);
-                },
-                'pagination-bottom-wrapper'
-            );
+                // منطق زر طلب المهني
+                document.querySelectorAll('.request-btn').forEach(btn => {
+                    const professionalId = btn.getAttribute('data-professional-id');
+                    
+                    if (userRole === 'employer' && userId != professionalId) {
+                        btn.disabled = false;
+                        btn.addEventListener('click', function() {
+                            btn.disabled = true;
+                            fetch('request_professional.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'professional_id=' + encodeURIComponent(professionalId)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    btn.textContent = 'تم إرسال الطلب';
+                                    btn.classList.add('applied');
+                                    alert('تم إرسال طلبك لهذا المهني!');
+                                } else if (data.error === 'already_requested') {
+                                    btn.textContent = 'تم الطلب مسبقاً';
+                                    alert('لقد أرسلت طلباً لهذا المهني مسبقاً.');
+                                } else if (data.error === 'unauthorized') {
+                                    alert('يجب تسجيل الدخول لطلب المهنيين.');
+                                    window.location.href = 'login.php';
+                                } else {
+                                    alert('حدث خطأ أثناء إرسال الطلب.');
+                                    btn.disabled = false;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error:', error);
+                                alert('حدث خطأ في الاتصال بالخادم.');
+                                btn.disabled = false;
+                            });
+                        });
+                    } else if (userRole === 'employer' && userId == professionalId) {
+                        btn.disabled = true;
+                        btn.textContent = 'لا يمكنك طلب نفسك';
+                    } else if (userRole === 'job_seeker') {
+                        btn.disabled = true;
+                        btn.textContent = 'غير متاح للمهنيين';
+                    } else {
+                        btn.disabled = true;
+                        btn.textContent = 'غير متاح';
+                    }
+                });
+
+                // منطق زر التقديم على الوظائف
+                document.querySelectorAll('.btn-apply').forEach(function(btn) {
+                    if (userRole === 'employer') {
+                        btn.disabled = true;
+                        btn.textContent = 'غير متاح لاصحاب العمل';
+                    } else if (userRole === 'job_seeker') {
+                        btn.disabled = false;
+                        btn.textContent = 'تقدم الآن';
+                        btn.addEventListener('click', function(e) {
+                            var jobId = btn.getAttribute('data-job-id');
+                            if (!jobId) {
+                                alert('معرف الوظيفة غير متوفر. يرجى مراجعة الإدارة.');
+                                return;
+                            }
+                            btn.disabled = true;
+                            fetch('apply_job.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: 'job_id=' + encodeURIComponent(jobId)
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    btn.textContent = 'تم التقديم';
+                                    btn.classList.add('applied');
+                                    alert('تم إرسال طلبك بنجاح! سيتم إشعار صاحب العمل.');
+                                } else if (data.error === 'already_applied') {
+                                    btn.textContent = 'تم التقديم مسبقاً';
+                                    alert('لقد تقدمت لهذه الوظيفة مسبقاً.');
+                                } else if (data.error === 'unauthorized') {
+                                    alert('يجب تسجيل الدخول للتقديم على الوظائف.');
+                                    window.location.href = 'login.php';
+                                } else {
+                                    console.error('Error details:', data);
+                                    alert('حدث خطأ أثناء التقديم: ' + (data.error || 'خطأ غير معروف'));
+                                    btn.disabled = false;
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error:', error);
+                                alert('حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى.');
+                                btn.disabled = false;
+                            });
+                        });
+                    } else {
+                        btn.disabled = true;
+                        btn.textContent = 'غير متاح';
+                    }
+                });
+
+                // إظهار أو إخفاء أقسام النتائج حسب وجود نتائج في الصفحة الحالية
+                document.getElementById('jobs-section').style.display = jobsCount > 0 ? '' : 'none';
+                document.getElementById('professionals-section').style.display = professionalsCount > 0 ? '' : 'none';
+
+                // شريط التنقل في أسفل الصفحة فقط
+                renderPagination(
+                    allResults.length,
+                    RESULTS_PER_PAGE,
+                    page,
+                    (newPage) => {
+                        currentPage = newPage;
+                        renderResultsPage(newPage);
+                    },
+                    'pagination-bottom-wrapper'
+                );
+            }, 300);
         }
 
         async function fetchSearchResults() {
@@ -233,6 +411,12 @@ $searchTerm = htmlspecialchars($searchTerm);
             }
         }
         document.addEventListener('DOMContentLoaded', fetchSearchResults);
+
+        function toggleDetails(button) {
+            const detailsDiv = button.closest('.job-box').querySelector('.job-details-full');
+            detailsDiv.classList.toggle('show');
+            button.textContent = detailsDiv.classList.contains('show') ? 'إخفاء التفاصيل' : 'التفاصيل';
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,125 @@
+/* Messages Dropdown Styling */
+.messages-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  min-width: 340px;
+  max-width: 400px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+  border-radius: 10px;
+  z-index: 2000;
+  padding: 0;
+  margin: 0;
+  direction: rtl;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+}
+
+.message-item {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.message-item:hover {
+  background: #f8f9fa;
+}
+
+.message-item:last-child {
+  border-bottom: none;
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.message-sender {
+  font-weight: bold;
+  color: #333;
+}
+
+.message-time {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.message-preview {
+  color: #666;
+  font-size: 0.95em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-item.unread .message-preview {
+  color: #333;
+  font-weight: 500;
+}
+
+.message-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #1abc5b;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 13px;
+  min-width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.messages-bell {
+  position: relative;
+  color: #222;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.messages-empty {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
+.messages-header {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.messages-title {
+  font-weight: bold;
+  color: #333;
+}
+
+.see-all-messages {
+  color: #1abc5b;
+  text-decoration: none;
+  font-size: 0.9em;
+}

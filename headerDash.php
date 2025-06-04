@@ -50,8 +50,10 @@ if (isset($_SESSION['user_id'])) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/headerDash.css">
 <link rel="stylesheet" href="css/notification-dropdown.css">
+<link rel="stylesheet" href="css/messages-dropdown.css">
 <script src="notification.js"></script>
 <script src="headerDash.js"></script>
+<script src="js/messages-dropdown.js"></script>
 <header class="dashboard-header">
   <div class="container">
 
@@ -60,8 +62,10 @@ if (isset($_SESSION['user_id'])) {
       <div style="display:flex; align-items:center; gap:1rem;">
         <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="تبديل القائمة الجانبية"><i class="fas fa-bars"></i></button>
         <div class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Fursa<span style="color: var(--primary);">Pal</span></span>
+          <a href="dashboard.php" style="text-decoration: none; color: inherit;">
+            <i class="fas fa-handshake"></i>
+            <span>Fursa<span style="color: var(--primary);">Pal</span></span>
+          </a>
         </div>
       </div>
       <!-- Center: Search bar with voice and suggestions -->
@@ -90,26 +94,23 @@ if (isset($_SESSION['user_id'])) {
             <span class="notification-count"><?php echo $unread_notifications; ?></span>
           <?php endif; ?>
           <div class="notification-dropdown" id="notificationDropdown" style="display:none;">
-            <div class="notification-list">
-              <?php
-              if (isset($_SESSION['user_id'])) {
-                $stmt = $conn->prepare('SELECT id, message, is_read, created_at FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5');
-                $stmt->execute([':user_id' => $_SESSION['user_id']]);
-                $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if (count($notifications) === 0) {
-                  echo '<div style="padding:20px;text-align:center;color:#888;">لا توجد إشعارات</div>';
-                }
-                foreach ($notifications as $notif) {
-                  $notif_class = $notif['is_read'] ? 'read' : 'unread';
-                  echo '<div class="notification-item ' . $notif_class . '">';
-                  echo '<span>' . htmlspecialchars($notif['message']) . '</span>';
-                  echo '<span class="notification-time">' . htmlspecialchars($notif['created_at']) . '</span>';
-                  echo '</div>';
-                }
-              }
-              ?>
+            <div class="notif-header">
+              <span>الإشعارات</span>
+              <div class="notif-tabs">
+                <button class="notif-tab active" data-tab="all">الكل</button>
+                <button class="notif-tab" data-tab="unread">غير مقروءة</button>
+              </div>
+            </div>
+            <div class="notif-mark-all">تمييز الكل كمقروءة</div>
+            <div class="notification-list" id="notificationList">
+              <div style="padding:20px;text-align:center;color:#888;">جاري التحميل...</div>
             </div>
           </div>
+        </div>
+        <div class="messages-bell" id="messagesBell">
+          <i class="fas fa-envelope"></i>
+          <span class="messages-count" id="messagesCount" style="display:none;"></span>
+          <div class="messages-dropdown" id="messagesDropdown"></div>
         </div>
         <div class="user-profile" id="userProfileMenuBtn">
           <img src="<?php echo $profile_photo; ?>" alt="صورة المستخدم">
@@ -156,6 +157,9 @@ if (isset($_SESSION['user_id'])) {
       <i class="fas fa-bookmark"></i>
       <span>المحفوظات</span>
     </a>
+    <a class="menu-item" href="messages.php">
+      <i class="fas fa-envelope"></i>
+      <span>الرسائل</span>
+    </a>
   </nav>
 </aside>
-<!-- تمت إزالة كود الجافاسكريبت الداخلي، الكود الآن في headerDash.js -->

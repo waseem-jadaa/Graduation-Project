@@ -69,6 +69,48 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .remove-saved-btn:hover {
             background: #c0392b;
         }
+        .job-details-full {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-right: 4px solid #007bff;
+        }
+        .job-details-full.show {
+            display: block;
+        }
+        .btn-details {
+            background-color: white;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .btn-details:hover {
+            background-color: #f8f9fa;
+            border-color: #2ecc71;
+            color: #2ecc71;
+        }
+        .btn-apply {
+            background-color: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-apply:hover {
+            background-color: #218c53;
+        }
+        .btn-apply.applied {
+            background-color: #888;
+        }
     </style>
 </head>
 <body>
@@ -82,14 +124,21 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="saved-job-card" data-job-id="<?php echo $job['job_ID']; ?>">
                 <div class="saved-job-info">
                     <div class="saved-job-title"><?php echo htmlspecialchars($job['title']); ?></div>
-                    <div class="saved-job-desc"><?php echo htmlspecialchars($job['description']); ?></div>
                     <div class="saved-job-meta">
                         <span><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($job['location']); ?></span> |
                         <span><i class="fas fa-money-bill-wave"></i> <?php echo htmlspecialchars($job['salary']); ?></span> |
-                        <span>صاحب العمل: <?php echo htmlspecialchars($job['employer_name']); ?></span>
+                        <span><i class="fas fa-building"></i> <?php echo htmlspecialchars($job['employer_name']); ?></span>
+                    </div>
+                    <div class="job-details-full">
+                        <h4>تفاصيل الوظيفة:</h4>
+                        <p><?php echo htmlspecialchars($job['description']); ?></p>
                     </div>
                 </div>
-                <button class="remove-saved-btn" data-job-id="<?php echo $job['job_ID']; ?>">حذف</button>
+                <div>
+                    <button class="btn-apply" data-job-id="<?php echo $job['job_ID']; ?>">تقدم الآن</button>
+                    <button class="btn-details" onclick="toggleDetails(this)">التفاصيل</button>
+                    <button class="remove-saved-btn" data-job-id="<?php echo $job['job_ID']; ?>">حذف</button>
+                </div>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
@@ -121,6 +170,48 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
       });
     });
   });
+
+  // تفعيل زر التقديم على الوظيفة
+  document.querySelectorAll('.btn-apply').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var jobId = btn.getAttribute('data-job-id');
+      if (!jobId) {
+        alert('معرف الوظيفة غير متوفر. يرجى مراجعة الإدارة.');
+        return;
+      }
+      btn.disabled = true;
+      fetch('apply_job.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'job_id=' + encodeURIComponent(jobId)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          btn.textContent = 'تم التقديم';
+          btn.classList.add('applied');
+          alert('تم إرسال طلبك بنجاح! سيتم إشعار صاحب العمل.');
+        } else if (data.error === 'already_applied') {
+          btn.textContent = 'تم التقديم مسبقاً';
+          alert('لقد تقدمت لهذه الوظيفة مسبقاً.');
+        } else {
+          alert('حدث خطأ أثناء التقديم.');
+        }
+      })
+      .catch(() => {
+        alert('حدث خطأ في الاتصال بالخادم.');
+      })
+      .finally(() => {
+        btn.disabled = false;
+      });
+    });
+  });
+
+  function toggleDetails(button) {
+    const detailsDiv = button.closest('.saved-job-card').querySelector('.job-details-full');
+    detailsDiv.classList.toggle('show');
+    button.textContent = detailsDiv.classList.contains('show') ? 'إخفاء التفاصيل' : 'التفاصيل';
+  }
 </script>
 </body>
 </html>

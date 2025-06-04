@@ -46,6 +46,33 @@ try {
     <link rel="stylesheet" href="dashboard.php" />
     <link rel="stylesheet" href="css/rating.css">
     <link rel="stylesheet" href="css/request-btn.css">
+    <style>
+      .job-details-full {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-right: 4px solid #007bff;
+      }
+      .job-details-full.show {
+        display: block;
+      }
+      .btn-details {
+        background-color: white;
+        color: #27ae60;
+        border: 1px solid #27ae60;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn-details:hover {
+        background-color: #f8f9fa;
+        border-color: #2ecc71;
+        color: #2ecc71;
+      }
+    </style>
   </head>
 
   <body class="dashboard-page">
@@ -123,7 +150,14 @@ try {
               <i class="fas fa-comments"></i>
             </div>
             <div class="stat-info">
-              <h3>8</h3>
+              <h3>
+                <?php
+                // عدد المحادثات الجديدة (غير المقروءة)
+                $stmt = $conn->prepare('SELECT COUNT(DISTINCT sender_ID) FROM message WHERE receiver_ID = :me AND seen = 0');
+                $stmt->execute([':me' => $user_id]);
+                echo $stmt->fetchColumn();
+                ?>
+              </h3>
               <p>محادثات جديدة</p>
             </div>
           </div>
@@ -169,7 +203,10 @@ try {
             }
             // جلب الوظائف المقترحة كما كان سابقاً
             try {
-                $stmt = $conn->prepare('SELECT * FROM job ORDER BY RAND() LIMIT 3');
+                $stmt = $conn->prepare('SELECT j.*, u.name as employer_name FROM job j 
+                    JOIN user u ON j.employer_ID = u.User_ID 
+                    WHERE j.status = "published" 
+                    ORDER BY RAND() LIMIT 3');
                 $stmt->execute();
                 $suggested_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
@@ -189,7 +226,7 @@ try {
               <a href="professionals.php" class="view-all">عرض الكل</a>
             <?php else: ?>
               <h2>وظائف مقترحة لك</h2>
-              <a href="#" class="view-all">عرض الكل</a>
+              <a href="jobs.php" class="view-all">عرض الكل</a>
             <?php endif; ?>
           </div>
 
@@ -223,7 +260,6 @@ try {
                     <img src="https://img.icons8.com/color/48/briefcase--v1.png" alt="وظائف عامة" class="company-logo">
                     <div class="job-title">
                       <h3><?php echo htmlspecialchars($job['title']); ?></h3>
-                      <p><?php echo htmlspecialchars($job['description']); ?></p>
                     </div>
                     <div class="job-save<?php echo !empty($job['saved']) ? ' saved' : ''; ?>" data-job-id="<?php echo $job['job_ID']; ?>" data-saved="<?php echo !empty($job['saved']) ? '1' : '0'; ?>">
                       <i class="<?php echo !empty($job['saved']) ? 'fas' : 'far'; ?> fa-bookmark"></i>
@@ -232,10 +268,15 @@ try {
                   <div class="job-details">
                     <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($job['location']); ?></p>
                     <p><i class="fas fa-money-bill-wave"></i> <?php echo htmlspecialchars($job['salary']); ?></p>
+                    <p><i class="fas fa-building"></i> <?php echo htmlspecialchars($job['employer_name']); ?></p>
+                  </div>
+                  <div class="job-details-full">
+                    <h4>تفاصيل الوظيفة:</h4>
+                    <p><?php echo htmlspecialchars($job['description']); ?></p>
                   </div>
                   <div class="job-actions">
                     <button class="btn-apply" data-job-id="<?php echo $job['job_ID']; ?>">تقدم الآن</button>
-                    <button class="btn-details">التفاصيل</button>
+                    <button class="btn-details" onclick="toggleDetails(this)">التفاصيل</button>
                   </div>
                 </div>
               <?php endforeach; ?>
@@ -308,6 +349,12 @@ try {
 
       function closeJobAnnouncement() {
         document.getElementById('job-announcement-modal').style.display = 'none';
+      }
+
+      function toggleDetails(button) {
+        const detailsDiv = button.closest('.job-card').querySelector('.job-details-full');
+        detailsDiv.classList.toggle('show');
+        button.textContent = detailsDiv.classList.contains('show') ? 'إخفاء التفاصيل' : 'التفاصيل';
       }
       
       document.addEventListener('DOMContentLoaded', function() {
@@ -447,10 +494,6 @@ try {
           });
         });
         
-        document.querySelector('.user-profile').addEventListener('click', function() {
-          this.classList.toggle('active');
-        });
-
         document.querySelectorAll('.rating-stars-dashboard').forEach(function(div) {
           var pid = div.getAttribute('data-professional-id');
           fetch('get_user_role.php')

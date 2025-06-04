@@ -248,16 +248,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="css/pagination.css">
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var userProfile = document.querySelector('.user-profile');
-      if (userProfile) {
-        userProfile.addEventListener('click', function(e) {
-          this.classList.toggle('active');
-          e.stopPropagation();
-        });
-        document.addEventListener('click', function() {
-          userProfile.classList.remove('active');
-        });
-      }
+      // حذف منطق الضغط على منطقة المستخدم لأنه موجود في headerDash.js
     });
     </script>
 </body>

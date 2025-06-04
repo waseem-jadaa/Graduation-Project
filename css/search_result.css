@@ -86,3 +86,24 @@
 .sidebar-header {
     background: transparent;
 }
+
+.btn-apply {
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 10px;
+}
+
+.btn-apply:hover {
+    background-color: #218c53;
+}
+
+.btn-apply.applied {
+    background-color: #888;
+    cursor: not-allowed;
+}

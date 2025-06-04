@@ -14,6 +14,33 @@ $searchTerm = htmlspecialchars($searchTerm);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الوظائف</title>
     <link rel="stylesheet" href="css/project.css">
+    <style>
+      .job-details-full {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-right: 4px solid #007bff;
+      }
+      .job-details-full.show {
+        display: block;
+      }
+      .btn-details {
+        background-color: white;
+        color: #27ae60;
+        border: 1px solid #27ae60;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn-details:hover {
+        background-color: #f8f9fa;
+        border-color: #2ecc71;
+        color: #2ecc71;
+      }
+    </style>
     <script>
         async function getUserRole() {
             // جلب نوع الحساب من السيرفر
@@ -50,7 +77,6 @@ $searchTerm = htmlspecialchars($searchTerm);
                     <img src="https://img.icons8.com/color/48/briefcase--v1.png" alt="وظائف عامة" class="company-logo">
                     <div class="job-title">
                         <h3>${job.title}</h3>
-                        <p>${job.description}</p>
                     </div>
                     <div class="job-save">
                         <i class="${isSaved ? 'fas' : 'far'} fa-bookmark" data-job-id="${job.job_ID}" style="${isSaved ? 'color:#27ae60' : ''}"></i>
@@ -59,10 +85,15 @@ $searchTerm = htmlspecialchars($searchTerm);
                 <div class="job-details">
                     <p><i class="fas fa-map-marker-alt"></i> ${job.location}</p>
                     <p><i class="fas fa-money-bill-wave"></i> ${job.salary}</p>
+                    <p><i class="fas fa-building"></i> ${job.employer_name}</p>
+                </div>
+                <div class="job-details-full">
+                    <h4>تفاصيل الوظيفة:</h4>
+                    <p>${job.description}</p>
                 </div>
                 <div class="job-actions">
                     <button class="btn-apply" data-job-id="${job.job_ID}">تقدم الآن</button>
-                    <button class="btn-details">التفاصيل</button>
+                    <button class="btn-details" onclick="toggleDetails(this)">التفاصيل</button>
                 </div>
             `;
             jobsContainer.appendChild(jobBox);
@@ -232,6 +263,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
         document.addEventListener('DOMContentLoaded', fetchJobs);
+
+        function toggleDetails(button) {
+            const detailsDiv = button.closest('.job-card').querySelector('.job-details-full');
+            detailsDiv.classList.toggle('show');
+            button.textContent = detailsDiv.classList.contains('show') ? 'إخفاء التفاصيل' : 'التفاصيل';
+        }
     </script>
 </head>
 <body class="dashboard-page">
@@ -250,16 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var userProfile = document.querySelector('.user-profile');
-      if (userProfile) {
-        userProfile.addEventListener('click', function(e) {
-          this.classList.toggle('active');
-          e.stopPropagation();
-        });
-        document.addEventListener('click', function() {
-          userProfile.classList.remove('active');
-        });
-      }
+      // حذف منطق الضغط على منطقة المستخدم لأنه موجود في headerDash.js
     });
     </script>
     <link rel="stylesheet" href="css/pagination.css">

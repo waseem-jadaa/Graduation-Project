@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 $description = isset($data['description']) ? trim($data['description']) : '';
-$apiKey = ''; // ضع مفتاحك هنا
+$apiKey = ''; 
 
 if (!$description) {
     echo json_encode(['error' => 'الوصف فارغ']);

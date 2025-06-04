@@ -11,13 +11,13 @@ try {
     $latest = isset($_GET['latest']) ? intval($_GET['latest']) : 0;
 
     // Pagination
-    $perPage = isset($_GET['perPage']) && is_numeric($_GET['perPage']) && $_GET['perPage'] > 0 ? (int)$_GET['perPage'] : 2;
+    $perPage = isset($_GET['perPage']) && is_numeric($_GET['perPage']) && $_GET['perPage'] > 0 ? (int)$_GET['perPage'] : 3;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
     $offset = ($page - 1) * $perPage;
 
     if ($latest) {
-        // جلب آخر 5 وظائف مضافة (معالجة في حال لم يوجد عمود created_at)
-        $stmt = $conn->prepare('SELECT job_ID, title, description, location FROM job ORDER BY job_ID DESC LIMIT 5');
+        // جلب آخر 5 وظائف منشورة فقط
+        $stmt = $conn->prepare("SELECT job_ID, title, description, location FROM job WHERE status = 'published' ORDER BY job_ID DESC LIMIT 5");
         $stmt->execute();
         $jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($jobs);
@@ -26,20 +26,28 @@ try {
 
     // Count total
     if ($searchTerm !== '') {
-        $countStmt = $conn->prepare('SELECT COUNT(*) FROM job WHERE title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm');
+        $countStmt = $conn->prepare("SELECT COUNT(*) FROM job WHERE status = 'published' AND (title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm)");
         $countStmt->execute([':searchTerm' => "%$searchTerm%"]);
         $total = $countStmt->fetchColumn();
-        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = job.job_ID AND saved_jobs.user_id = :uid) AS saved FROM job WHERE title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm LIMIT :offset, :perPage');
+        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
+            FROM job j 
+            JOIN user u ON j.employer_ID = u.User_ID 
+            WHERE j.status = 'published' AND (j.title LIKE :searchTerm OR j.description LIKE :searchTerm OR j.location LIKE :searchTerm) 
+            LIMIT :offset, :perPage");
         $stmt->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':uid', $user_id, PDO::PARAM_INT);
         $stmt->execute();
     } else {
-        $countStmt = $conn->prepare('SELECT COUNT(*) FROM job');
+        $countStmt = $conn->prepare("SELECT COUNT(*) FROM job WHERE status = 'published'");
         $countStmt->execute();
         $total = $countStmt->fetchColumn();
-        $stmt = $conn->prepare('SELECT job_ID, title, description, location, salary, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = job.job_ID AND saved_jobs.user_id = :uid) AS saved FROM job LIMIT :offset, :perPage');
+        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
+            FROM job j 
+            JOIN user u ON j.employer_ID = u.User_ID 
+            WHERE j.status = 'published' 
+            LIMIT :offset, :perPage");
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':uid', $user_id, PDO::PARAM_INT);
