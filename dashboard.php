@@ -43,46 +43,17 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FursaPal - لوحة التحكم</title>
     <link rel="stylesheet" href="css/project.css" />
-    <link rel="stylesheet" href="dashboard.php" />
+    <link rel="stylesheet" href="css/dashboard.css" />
     <link rel="stylesheet" href="css/rating.css">
     <link rel="stylesheet" href="css/request-btn.css">
-    <style>
-      .job-details-full {
-        display: none;
-        margin-top: 15px;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        border-right: 4px solid #007bff;
-      }
-      .job-details-full.show {
-        display: block;
-      }
-      .btn-details {
-        background-color: white;
-        color: #27ae60;
-        border: 1px solid #27ae60;
-        padding: 8px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-      .btn-details:hover {
-        background-color: #f8f9fa;
-        border-color: #2ecc71;
-        color: #2ecc71;
-      }
-    </style>
+    <link rel="stylesheet" href="css/new_jobs_modal.css">
   </head>
 
   <body class="dashboard-page">
-    
     <?php include 'headerDash.php'; ?>
-    
     
     <main class="main-content">
       <div class="container">
-       
         <section class="welcome-card">
           <div class="welcome-content">
             <h1>مرحباً بعودتك، <?php echo $user_name; ?>!</h1>
@@ -98,6 +69,7 @@ try {
             <?php endif; ?>
             <?php if ($role === 'employer'): ?>
               <button class="btn-job-announcement" onclick="location.href='job_post.php'">نشر وظيفة</button>
+              <button class="btn-manage-jobs" onclick="location.href='manage_jobs.php'">إدارة وظائفي</button>
             <?php endif; ?>
           </div>
         </section>
@@ -120,8 +92,8 @@ try {
             <div class="stat-info">
               <h3>
                 <?php
-                // عدد الوظائف المتاحة
-                $stmt = $conn->prepare('SELECT COUNT(*) FROM job');
+                // عدد الوظائف المتاحة (المنشورة فقط)
+                $stmt = $conn->prepare('SELECT COUNT(*) FROM job WHERE status = "published"');
                 $stmt->execute();
                 echo $stmt->fetchColumn();
                 ?>
@@ -181,6 +153,26 @@ try {
         </section>
         <?php endif; ?>
 
+        <?php if ($role === 'job_seeker'): ?>
+        <!-- AI Job Recommendations Section -->
+        <section class="ai-recommend-section" style="margin-bottom: 32px;">
+          <div class="section-header" style="display:flex;align-items:center;gap:10px;">
+            <h2 style="margin:0;">وظائف مقترحة مطابقة لمهنتك ومهاراتك </h2>
+            <button id="ai-help-btn" style="background:none;border:none;cursor:pointer;font-size:1.3em;" title="معلومات"><span>ℹ️</span></button>
+          </div>
+          <div id="ai-recommend-loading" style="color:#888;margin:16px 0;">جاري جلب التوصيات الذكية...</div>
+          <div id="ai-recommend-jobs" class="jobs-grid"></div>
+        </section>
+        <!-- AI Help Modal -->
+        <div id="ai-help-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:9999;align-items:center;justify-content:center;">
+          <div style="background:#fff;padding:30px 20px;border-radius:12px;max-width:400px;width:90vw;max-height:80vh;overflow-y:auto;position:relative;">
+            <button onclick="document.getElementById('ai-help-modal').style.display='none'" style="position:absolute;top:10px;left:10px;font-size:1.2em;">&times;</button>
+            <h3 style="margin-bottom:10px;">كيف تعمل التوصيات الذكية؟</h3>
+            <p style="font-size:1.05em;line-height:1.7;">هذه الوظائف مقترحة بناءً على مهاراتك ومهنتك في ملفك الشخصي، حيث يتم مطابقة بياناتك مع الوظائف المتاحة باستخدام خوارزمية ذكية . يمكنك مراجعة الوظائف والتقديم مباشرة إذا أعجبتك التوصيات.</p>
+          </div>
+        </div>
+        <?php endif; ?>
+
         <?php
         // Fetch suggested jobs or professionals based on role
         $suggested_professionals = [];
@@ -225,7 +217,7 @@ try {
               <h2>مهنيون مقترحون لك</h2>
               <a href="professionals.php" class="view-all">عرض الكل</a>
             <?php else: ?>
-              <h2>وظائف مقترحة لك</h2>
+              <h2>وظائف مقترحة أخرى</h2>
               <a href="jobs.php" class="view-all">عرض الكل</a>
             <?php endif; ?>
           </div>
@@ -250,6 +242,7 @@ try {
                   </div>
                   <div class="job-actions">
                     <button class="btn-request-professional" data-professional-id="<?php echo $pro['User_ID']; ?>">اطلبه الآن</button>
+                    <a href="professional_details.php?id=<?php echo htmlspecialchars($pro['User_ID']); ?>" class="btn-details">التفاصيل</a>
                   </div>
                 </div>
               <?php endforeach; ?>
@@ -284,30 +277,6 @@ try {
           </div>
         </section>
 
-        <?php
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
-            $title = $_POST['title'];
-            $description = $_POST['description'];
-            $location = $_POST['location'];
-            $salary = $_POST['salary'];
-            $employer_id = $_SESSION['user_id'];
-
-            try {
-                $stmt = $conn->prepare('INSERT INTO job (employer_ID, title, description, location, salary) VALUES (:employer_id, :title, :description, :location, :salary)');
-                $stmt->execute([
-                    ':employer_id' => $employer_id,
-                    ':title' => $title,
-                    ':description' => $description,
-                    ':location' => $location,
-                    ':salary' => $salary
-                ]);
-                echo '<p>تمت إضافة الوظيفة بنجاح!</p>';
-            } catch (PDOException $e) {
-                echo '<p>حدث خطأ أثناء إضافة الوظيفة.</p>';
-            }
-        }
-        ?>
-
         <section class="activity-section">
           <div class="section-header">
             <h2>آخر الأنشطة</h2>
@@ -320,7 +289,6 @@ try {
       </div>
     </main>
 
-    
     <div class="mobile-bottom-nav">
       <a href="#" class="mobile-nav-item active">
         <i class="fas fa-home"></i>
@@ -340,291 +308,6 @@ try {
       </a>
     </div>
 
-    
-
-    <script>
-      function openJobAnnouncement() {
-        document.getElementById('job-announcement-modal').style.display = 'block';
-      }
-
-      function closeJobAnnouncement() {
-        document.getElementById('job-announcement-modal').style.display = 'none';
-      }
-
-      function toggleDetails(button) {
-        const detailsDiv = button.closest('.job-card').querySelector('.job-details-full');
-        detailsDiv.classList.toggle('show');
-        button.textContent = detailsDiv.classList.contains('show') ? 'إخفاء التفاصيل' : 'التفاصيل';
-      }
-      
-      document.addEventListener('DOMContentLoaded', function() {
-       
-        document.querySelectorAll('.job-save').forEach(btn => {
-          // تفعيل اللون الأخضر عند الحفظ
-          if (btn.dataset.saved === '1') {
-            btn.classList.add('saved');
-            btn.querySelector('i').classList.remove('far');
-            btn.querySelector('i').classList.add('fas');
-          }
-          btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            var jobId = btn.getAttribute('data-job-id');
-            if (!jobId) {
-              alert('معرف الوظيفة غير متوفر.');
-              return;
-            }
-            if (btn.classList.contains('saved')) {
-              // إزالة الحفظ
-              fetch('remove_saved_job.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'job_id=' + encodeURIComponent(jobId)
-              })
-              .then(res => res.json())
-              .then(data => {
-                if (data.success) {
-                  btn.classList.remove('saved');
-                  btn.querySelector('i').classList.remove('fas');
-                  btn.querySelector('i').classList.add('far');
-                } else {
-                  alert('حدث خطأ أثناء إزالة الحفظ.');
-                }
-              })
-              .catch(() => {
-                alert('حدث خطأ في الاتصال بالخادم.');
-              });
-            } else {
-              // إضافة الحفظ
-              fetch('save_job.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'job_id=' + encodeURIComponent(jobId)
-              })
-              .then(res => res.json())
-              .then(data => {
-                if (data.success) {
-                  btn.classList.add('saved');
-                  btn.querySelector('i').classList.remove('far');
-                  btn.querySelector('i').classList.add('fas');
-                } else if (data.error === 'already_saved') {
-                  alert('هذه الوظيفة محفوظة بالفعل.');
-                } else if (data.error === 'unauthorized') {
-                  alert('يجب تسجيل الدخول لحفظ الوظيفة.');
-                } else {
-                  alert('حدث خطأ أثناء الحفظ.');
-                }
-              })
-              .catch(() => {
-                alert('حدث خطأ في الاتصال بالخادم.');
-              });
-            }
-          });
-        });
-        
-        document.querySelectorAll('.job-save').forEach(btn => {
-          btn.addEventListener('click', function() {
-            this.querySelector('i').classList.toggle('far');
-            this.querySelector('i').classList.toggle('fas');
-          });
-        });
-        
-        // تفعيل زر التقديم على الوظيفة
-        document.querySelectorAll('.btn-apply').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var jobCard = btn.closest('.job-card');
-            if (!jobCard) return;
-            // محاولة الحصول على معرف الوظيفة من data attribute
-            var jobId = btn.getAttribute('data-job-id');
-            if (!jobId) {
-              alert('معرف الوظيفة غير متوفر. يرجى مراجعة الإدارة.');
-              return;
-            }
-            btn.disabled = true;
-            fetch('apply_job.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: 'job_id=' + encodeURIComponent(jobId)
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                btn.textContent = 'تم التقديم';
-                btn.classList.add('applied');
-                alert('تم إرسال طلبك بنجاح! سيتم إشعار صاحب العمل.');
-              } else if (data.error === 'already_applied') {
-                btn.textContent = 'تم التقديم مسبقاً';
-                alert('لقد تقدمت لهذه الوظيفة مسبقاً.');
-              } else {
-                alert('حدث خطأ أثناء التقديم.');
-              }
-            })
-            .catch(() => {
-              alert('حدث خطأ في الاتصال بالخادم.');
-            })
-            .finally(() => {
-              btn.disabled = false;
-            });
-          });
-        });
-        
-        document.querySelectorAll('.btn-request-professional').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var professionalId = btn.getAttribute('data-professional-id');
-            if (professionalId) {
-              // إرسال الطلب عبر AJAX
-              fetch('request_professional.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'professional_id=' + encodeURIComponent(professionalId)
-              })
-              .then(res => res.json())
-              .then(data => {
-                if (data.success) {
-                  alert('تم إرسال طلبك لهذا المهني!');
-                } else if (data.error === 'already_requested') {
-                  alert('لقد أرسلت طلباً لهذا المهني مسبقاً.');
-                } else {
-                  alert('حدث خطأ أثناء إرسال الطلب.');
-                }
-              })
-              .catch(() => {
-                alert('حدث خطأ في الاتصال بالخادم.');
-              });
-            }
-          });
-        });
-        
-        document.querySelectorAll('.rating-stars-dashboard').forEach(function(div) {
-          var pid = div.getAttribute('data-professional-id');
-          fetch('get_user_role.php')
-            .then(res => res.json())
-            .then(userInfo => {
-              fetch('get_professional_rating.php?professional_id=' + pid)
-                .then(res => res.json())
-                .then(data => {
-                  let avg = data && typeof data.avg_rating !== 'undefined' ? Math.round(data.avg_rating) : 0;
-                  let stars = '';
-                  for (let i = 1; i <= 5; i++) {
-                    stars += `<span class="star" data-star="${i}" style="color:${i <= avg ? '#FFD700' : '#ccc'};font-size:1.3em;cursor:pointer;">★</span>`;
-                  }
-                  div.innerHTML = `<span class="stars-container">${stars}</span>`;
-
-                  // إذا كان المستخدم صاحب عمل، فعّل التقييم
-                  if (userInfo.role === 'employer' && userInfo.user_id != pid) {
-                    const starSpans = div.querySelectorAll('.star');
-                    let selected = 0;
-                    // Hover effect
-                    starSpans.forEach((star, idx) => {
-                      star.addEventListener('mouseenter', function() {
-                        starSpans.forEach((s, i) => {
-                          s.style.color = i <= idx ? '#FFD700' : '#ccc';
-                        });
-                      });
-                      star.addEventListener('mouseleave', function() {
-                        starSpans.forEach((s, i) => {
-                          s.style.color = i < selected ? '#FFD700' : '#ccc';
-                        });
-                      });
-                      // Click to rate
-                      star.addEventListener('click', function() {
-                        selected = idx + 1;
-                        // إرسال التقييم للخادم
-                        fetch('rate_professional.php', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                          body: `professional_id=${pid}&rating=${selected}`
-                        })
-                        .then(res => res.json())
-                        .then(result => {
-                          if (result.success) {
-                            starSpans.forEach((s, i) => {
-                              s.style.color = i < selected ? '#FFD700' : '#ccc';
-                            });
-                            alert('تم حفظ تقييمك بنجاح!');
-                          } else if(result.error === 'already_rated') {
-                            alert('لقد قمت بتقييم هذا المهني مسبقاً.');
-                          } else if(result.error === 'not_allowed') {
-                            alert('يمكنك تقييم المهني فقط بعد التعامل معه.');
-                          } else {
-                            alert('حدث خطأ أثناء حفظ التقييم.');
-                          }
-                        });
-                      });
-                    });
-                    // إعادة لون النجوم بعد الخروج من hover
-                    div.addEventListener('mouseleave', function() {
-                      starSpans.forEach((s, i) => {
-                        s.style.color = i < avg ? '#FFD700' : '#ccc';
-                      });
-                    });
-                  }
-                })
-                .catch(() => {
-                  div.innerHTML = '<span style="color:#888;">لا يوجد تقييم</span>';
-                });
-            });
-        });
-
-        var btnExplore = document.getElementById('btn-explore-jobs');
-        if (btnExplore) {
-          btnExplore.addEventListener('click', function() {
-            // جلب الوظائف الجديدة (آخر 5 وظائف مضافة)
-            fetch('get_jobs.php?latest=1')
-              .then(res => res.json())
-              .then(jobs => {
-                var html = '';
-                if (jobs.length === 0) {
-                  html = '<p>لا توجد وظائف جديدة حالياً.</p>';
-                } else {
-                  jobs.forEach(job => {
-                    html += `<div style='border-bottom:1px solid #eee;padding:10px 0;'>
-                      <strong>${job.title}</strong><br>
-                      <span style='color:#888;'>${job.location}</span><br>
-                      <span style='font-size:0.9em;'>${job.created_at || ''}</span>
-                      <p style='margin:5px 0 0;'>${job.description || ''}</p>
-                    </div>`;
-                  });
-                }
-                document.getElementById('new-jobs-list').innerHTML = html;
-                document.getElementById('new-jobs-modal').style.display = 'flex';
-              })
-              .catch(() => {
-                document.getElementById('new-jobs-list').innerHTML = '<p>تعذر جلب الوظائف الجديدة.</p>';
-                document.getElementById('new-jobs-modal').style.display = 'flex';
-              });
-          });
-        }
-
-        // جلب الأنشطة ديناميكيًا
-        function renderActivityItem(activity) {
-          let icon = activity.icon || 'fas fa-bell';
-          let msg = activity.message || '';
-          let time = activity.time_ago || activity.created_at || '';
-          return `<div class="activity-item">
-            <div class="activity-icon">
-              <i class="${icon}"></i>
-            </div>
-            <div class="activity-content">
-              <p>${msg}</p>
-              <span class="activity-time">${time}</span>
-            </div>
-          </div>`;
-        }
-        fetch('get_notifications.php')
-          .then(res => res.json())
-          .then(list => {
-            let html = '';
-            if (Array.isArray(list) && list.length > 0) {
-              html = list.map(renderActivityItem).join('');
-            } else {
-              html = '<div style="text-align:center;color:#888;">لا يوجد أنشطة حديثة.</div>';
-            }
-            document.getElementById('activity-timeline').innerHTML = html;
-          })
-          .catch(() => {
-            document.getElementById('activity-timeline').innerHTML = '<div style="text-align:center;color:#888;">تعذر جلب الأنشطة.</div>';
-          });
-      });
-    </script>
+    <script src="js/dashboard.js"></script>
   </body>
 </html>

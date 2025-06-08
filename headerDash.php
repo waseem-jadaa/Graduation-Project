@@ -51,9 +51,11 @@ if (isset($_SESSION['user_id'])) {
 <link rel="stylesheet" href="css/headerDash.css">
 <link rel="stylesheet" href="css/notification-dropdown.css">
 <link rel="stylesheet" href="css/messages-dropdown.css">
-<script src="notification.js"></script>
-<script src="headerDash.js"></script>
+<link rel="stylesheet" href="css/work-images.css">
+<script src="js/notification.js"></script>
+<script src="js/headerDash.js"></script>
 <script src="js/messages-dropdown.js"></script>
+<script src="js/work-images.js?t=<?php echo time(); ?>" defer></script>
 <header class="dashboard-header">
   <div class="container">
 

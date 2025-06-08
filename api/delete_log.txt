@@ -1,0 +1,22 @@
+[2025-06-07 14:18:37] Delete script started.
+[2025-06-07 14:18:37] Received image_number: 1
+[2025-06-07 14:18:37] User ID: 21
+[2025-06-07 14:18:37] Attempting to fetch current image path for work_image_1
+[2025-06-07 14:18:37] $conn type before fetch: object, PDO class: PDO
+[2025-06-07 14:18:37] Fetched image path from DB: /forsa-pal/uploads/work_images/68442e186a32b.png
+[2025-06-07 14:18:37] Attempting to delete image path from database for slot 1.
+[2025-06-07 14:18:37] $conn type before update: object, PDO class: PDO
+[2025-06-07 14:18:37] Database updated successfully. work_image_1 set to NULL.
+[2025-06-07 14:18:37] Physical file not found at: C:\xampp\htdocs\forsa-pal\api/../forsa-pal/uploads/work_images/68442e186a32b.png. Skipping physical deletion.
+[2025-06-07 14:18:37] Delete script finished.
+[2025-06-07 21:56:47] Delete script started.
+[2025-06-07 21:56:47] Received image_number: 1
+[2025-06-07 21:56:47] User ID: 19
+[2025-06-07 21:56:47] Attempting to fetch current image path for work_image_1
+[2025-06-07 21:56:47] $conn type before fetch: object, PDO class: PDO
+[2025-06-07 21:56:47] Fetched image path from DB: /forsa-pal/uploads/work_images/684499795e927.png
+[2025-06-07 21:56:47] Attempting to delete image path from database for slot 1.
+[2025-06-07 21:56:47] $conn type before update: object, PDO class: PDO
+[2025-06-07 21:56:47] Database updated successfully. work_image_1 set to NULL.
+[2025-06-07 21:56:47] Physical file not found at: C:\xampp\htdocs\forsa-pal\api/../forsa-pal/uploads/work_images/684499795e927.png. Skipping physical deletion.
+[2025-06-07 21:56:47] Delete script finished.

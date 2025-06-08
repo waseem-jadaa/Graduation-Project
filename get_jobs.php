@@ -11,7 +11,7 @@ try {
     $latest = isset($_GET['latest']) ? intval($_GET['latest']) : 0;
 
     // Pagination
-    $perPage = isset($_GET['perPage']) && is_numeric($_GET['perPage']) && $_GET['perPage'] > 0 ? (int)$_GET['perPage'] : 3;
+    $perPage = isset($_GET['perPage']) && is_numeric($_GET['perPage']) && $_GET['perPage'] > 0 ? (int)$_GET['perPage'] : 5;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
     $offset = ($page - 1) * $perPage;
 
@@ -29,7 +29,7 @@ try {
         $countStmt = $conn->prepare("SELECT COUNT(*) FROM job WHERE status = 'published' AND (title LIKE :searchTerm OR description LIKE :searchTerm OR location LIKE :searchTerm)");
         $countStmt->execute([':searchTerm' => "%$searchTerm%"]);
         $total = $countStmt->fetchColumn();
-        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
+        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, j.status, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
             FROM job j 
             JOIN user u ON j.employer_ID = u.User_ID 
             WHERE j.status = 'published' AND (j.title LIKE :searchTerm OR j.description LIKE :searchTerm OR j.location LIKE :searchTerm) 
@@ -43,7 +43,7 @@ try {
         $countStmt = $conn->prepare("SELECT COUNT(*) FROM job WHERE status = 'published'");
         $countStmt->execute();
         $total = $countStmt->fetchColumn();
-        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
+        $stmt = $conn->prepare("SELECT j.job_ID, j.title, j.description, j.location, j.salary, j.status, u.name as employer_name, (SELECT COUNT(*) FROM saved_jobs WHERE saved_jobs.job_id = j.job_ID AND saved_jobs.user_id = :uid) AS saved 
             FROM job j 
             JOIN user u ON j.employer_ID = u.User_ID 
             WHERE j.status = 'published' 

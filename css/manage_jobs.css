@@ -1,0 +1,131 @@
+.job-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-right: 4px solid #27ae60;
+    transition: transform 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+.job-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-edit, .btn-delete {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.btn-edit {
+    background: #27ae60;
+    color: white;
+}
+
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #219a52;
+    transform: translateY(-2px);
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.edit-form {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.edit-form.show {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    transition: border-color 0.3s;
+    font-size: 14px;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    border-color: #27ae60;
+    outline: none;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border-right: 4px solid #28a745;
+    font-weight: bold;
+}
+
+.job-card h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.job-card p {
+    color: #34495e;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.job-card strong {
+    color: #2c3e50;
+}
+
+.job-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+.status-filled {
+    background-color: #888;
+    color: white;
+}
+
+.status-published {
+    background-color: #27ae60;
+    color: white;
+} 

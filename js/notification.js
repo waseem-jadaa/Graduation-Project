@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const item = document.createElement('div');
             item.className = 'notification-item' + (n.is_read == 0 ? ' unread' : ' read');
             // صورة المرسل
-            // إذا كان الإشعار من الأدمن (sender_id == 25) استخدم صورة الأدمن بمسار متوافق مع المتصفح
+            // إذا كان الإشعار من الأدمن (sender_id == 25) استخدم صورة الأدمن
             let avatar = (n.sender_id == 25)
                 ? 'PG/admin_photo.png'
-                : (n.sender_photo ? n.sender_photo : 'image/p.png');
+                : (n.photo || n.sender_photo);
             item.innerHTML = `
                 <div style=\"display:flex;align-items:flex-start;justify-content:space-between;width:100%;\">
                   <div style=\"flex:1;display:flex;align-items:flex-start;gap:12px;\">
@@ -125,10 +125,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                     body: 'id=' + n.id
                 }).then(() => {
-                    if (n.link) window.location = n.link;
-                    else item.classList.remove('unread');
+                    // Always mark as read after click
                     n.is_read = 1;
+                    item.classList.remove('unread');
                     updateNotifCount();
+
+                    // Redirect logic
+                    if (n.message.includes('تم إغلاق الوظيفة') || n.message.includes('تم تحديث تفاصيل الوظيفة')) {
+                        // For job closed/updated notifications, go to the main jobs page
+                        window.location = '/forsa-pal/jobs.php';
+                    } else if (n.link) {
+                        // For other notifications, go to the specified link
+                        window.location = n.link;
+                    }
                 });
             };
             notifList.appendChild(item);
@@ -203,4 +212,4 @@ document.addEventListener('DOMContentLoaded', function() {
             notifDropdown.style.display = 'none';
         }
     });
-});
+}); 

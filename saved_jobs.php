@@ -143,7 +143,7 @@ $saved_jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-<script src="headerDash.js"></script>
+<script src="js/headerDash.js"></script>
 <script>
 // حذف وظيفة محفوظة عبر AJAX
   document.querySelectorAll('.remove-saved-btn').forEach(function(btn) {

@@ -1,0 +1,74 @@
+[2025-06-07 14:18:32] Upload script started.
+[2025-06-07 14:18:32] User type in session: job_seeker
+[2025-06-07 14:18:32] User ID set: 21
+[2025-06-07 14:18:32] Operation type: Change, Target image number (if change): 1
+[2025-06-07 14:18:32] Checking $_FILES variable.
+[2025-06-07 14:18:32] Files variable seems okay. Processing uploads.
+[2025-06-07 14:18:32] Starting file processing loop. Number of files to process: 1
+[2025-06-07 14:18:32] Processing file 1 of 1: Screenshot 2025-06-07 003511.png
+[2025-06-07 14:18:32] File name: Screenshot 2025-06-07 003511.png, Extension: png
+[2025-06-07 14:18:32] Attempting to move uploaded file C:\xampp\tmp\php1EE6.tmp to ../uploads/work_images/68442e186a32b.png
+[2025-06-07 14:18:32] File moved successfully: ../uploads/work_images/68442e186a32b.png
+[2025-06-07 14:18:32] Change operation: target slot is 1
+[2025-06-07 14:18:32] Attempting to delete old physical file: C:\xampp\htdocs\forsa-pal\api/../uploads/work_images/68440b1ecb040.png
+[2025-06-07 14:18:32] Old physical file deleted successfully.
+[2025-06-07 14:18:32] Attempting database update for slot 1: /forsa-pal/uploads/work_images/68442e186a32b.png
+[2025-06-07 14:18:32] Database updated successfully for slot 1
+[2025-06-07 14:18:32] Upload process finished. Overall success: Yes, Messages: تم رفع الصورة Screenshot 2025-06-07 003511.png بنجاح!
+[2025-06-07 14:18:32] Response sent.
+[2025-06-07 14:18:48] Upload script started.
+[2025-06-07 14:18:48] User type in session: job_seeker
+[2025-06-07 14:18:48] User ID set: 21
+[2025-06-07 14:18:48] Operation type: New Upload, Target image number (if change): 0
+[2025-06-07 14:18:48] Checking $_FILES variable.
+[2025-06-07 14:18:48] Files variable seems okay. Processing uploads.
+[2025-06-07 14:18:48] Fetching current images for new upload slot determination.
+[2025-06-07 14:18:48] Current images from DB for slot determination: Array
+(
+    [work_image_1] => 
+    [work_image_2] => /forsa-pal/uploads/work_images/68440b0047b2b.png
+    [work_image_3] => /forsa-pal/uploads/work_images/68440a463f7cf.png
+    [work_image_4] => /forsa-pal/uploads/work_images/68440a595f420.png
+    [work_image_5] => /forsa-pal/uploads/work_images/684407a488395.png
+)
+
+[2025-06-07 14:18:48] Starting file processing loop. Number of files to process: 1
+[2025-06-07 14:18:48] Processing file 1 of 1: Screenshot 2025-06-07 003522.png
+[2025-06-07 14:18:48] File name: Screenshot 2025-06-07 003522.png, Extension: png
+[2025-06-07 14:18:48] Attempting to move uploaded file C:\xampp\tmp\php5EAF.tmp to ../uploads/work_images/68442e28b8937.png
+[2025-06-07 14:18:48] File moved successfully: ../uploads/work_images/68442e28b8937.png
+[2025-06-07 14:18:48] New upload operation: finding first available slot for current file.
+[2025-06-07 14:18:48] Current image count in DB: 4
+[2025-06-07 14:18:48] Found empty slot for new upload: 1 for file Screenshot 2025-06-07 003522.png
+[2025-06-07 14:18:48] Attempting database update for slot 1: /forsa-pal/uploads/work_images/68442e28b8937.png
+[2025-06-07 14:18:48] Database updated successfully for slot 1
+[2025-06-07 14:18:48] Upload process finished. Overall success: Yes, Messages: تم رفع الصورة Screenshot 2025-06-07 003522.png بنجاح!
+[2025-06-07 14:18:48] Response sent.
+[2025-06-07 21:56:41] Upload script started.
+[2025-06-07 21:56:41] User type in session: job_seeker
+[2025-06-07 21:56:41] User ID set: 19
+[2025-06-07 21:56:41] Operation type: New Upload, Target image number (if change): 0
+[2025-06-07 21:56:41] Checking $_FILES variable.
+[2025-06-07 21:56:41] Files variable seems okay. Processing uploads.
+[2025-06-07 21:56:41] Fetching current images for new upload slot determination.
+[2025-06-07 21:56:41] Current images from DB for slot determination: Array
+(
+    [work_image_1] => 
+    [work_image_2] => 
+    [work_image_3] => 
+    [work_image_4] => 
+    [work_image_5] => 
+)
+
+[2025-06-07 21:56:41] Starting file processing loop. Number of files to process: 1
+[2025-06-07 21:56:41] Processing file 1 of 1: ChatGPT Image Apr 10, 2025, 09_23_28 PM.png
+[2025-06-07 21:56:41] File name: ChatGPT Image Apr 10, 2025, 09_23_28 PM.png, Extension: png
+[2025-06-07 21:56:41] Attempting to move uploaded file C:\xampp\tmp\php9EE4.tmp to ../uploads/work_images/684499795e927.png
+[2025-06-07 21:56:41] File moved successfully: ../uploads/work_images/684499795e927.png
+[2025-06-07 21:56:41] New upload operation: finding first available slot for current file.
+[2025-06-07 21:56:41] Current image count in DB: 0
+[2025-06-07 21:56:41] Found empty slot for new upload: 1 for file ChatGPT Image Apr 10, 2025, 09_23_28 PM.png
+[2025-06-07 21:56:41] Attempting database update for slot 1: /forsa-pal/uploads/work_images/684499795e927.png
+[2025-06-07 21:56:41] Database updated successfully for slot 1
+[2025-06-07 21:56:41] Upload process finished. Overall success: Yes, Messages: تم رفع الصورة ChatGPT Image Apr 10, 2025, 09_23_28 PM.png بنجاح!
+[2025-06-07 21:56:41] Response sent.

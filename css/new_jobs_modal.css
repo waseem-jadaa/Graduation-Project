@@ -1,0 +1,99 @@
+/* Styles for the New Jobs Modal */
+
+.new-jobs-modal-overlay {
+  display: none; /* Controlled by JavaScript */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+  z-index: 9999;
+  display: flex; /* Use flexbox for centering */
+  align-items: center;
+  justify-content: center;
+}
+
+.new-jobs-modal-content {
+  background: #fff;
+  padding: 30px; /* Increased padding */
+  border-radius: 12px;
+  max-width: 550px; /* Slightly wider */
+  width: 90vw;
+  max-height: 85vh; /* Slightly taller */
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+  animation: scaleIn 0.3s ease-out; /* Add a simple animation */
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.new-jobs-modal-close {
+  position: absolute;
+  top: 15px; /* Adjusted position */
+  left: 15px; /* Adjusted position */
+  font-size: 1.6em; /* Larger close button */
+  font-weight: bold;
+  color: #aaa; /* Muted color */
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.3s ease; /* Smooth transition */
+}
+
+.new-jobs-modal-close:hover {
+  color: #777; /* Darker color on hover */
+}
+
+.new-jobs-modal-title {
+    margin-bottom: 25px; /* Increased margin */
+    color: var(--primary); /* Use primary color */
+    text-align: center; /* Center the title */
+    font-size: 1.8em; /* Larger title */
+}
+
+.new-jobs-list {
+  /* styles for the container if needed */
+}
+
+.modal-job-item {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0; /* Increased padding */
+  transition: background-color 0.2s ease; /* Hover effect */
+}
+
+.modal-job-item:last-child {
+    border-bottom: none; /* No border for the last item */
+}
+
+.modal-job-item:hover {
+    background-color: #f9f9f9; /* Subtle hover background */
+}
+
+.modal-job-item strong {
+  display: block; /* Make title a block element */
+  font-size: 1.2em; /* Slightly larger title */
+  margin-bottom: 5px;
+  color: var(--secondary); /* Use secondary color for job title */
+}
+
+.modal-job-item span {
+    color: #777; /* Darker grey for meta info */
+    font-size: 0.95em; /* Slightly larger font */
+    margin-right: 15px;
+}
+
+.modal-job-item span i {
+    color: var(--primary); /* Color icons */
+    margin-left: 5px;
+}
+
+.modal-job-item p {
+    margin: 10px 0 0;
+    color: var(--dark); /* Use dark color for description */
+    line-height: 1.6; /* Improved readability */
+} 

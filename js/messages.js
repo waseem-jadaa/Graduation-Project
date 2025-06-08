@@ -1,4 +1,3 @@
-
 // messages.js
 let selectedUserName = '';
 let selectedUserImg = 'image/p.png';
@@ -411,7 +410,7 @@ messagesDropdown.addEventListener('click', function(e) {
     let userImg = 'image/p.png';
     currentUserId = userId;
     selectedUserName = userName;
-selectedUserImg = userImg;
+    selectedUserImg = userImg;
     setChatHeader(userName, userImg);
     chatForm.style.display = 'flex';
     loadMessages(userId, userName, userImg);
@@ -425,4 +424,4 @@ function setChatHeader(userName, userImg) {
         <img src="${userImg || 'image/p.png'}" alt="avatar" class="msg-avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #eee;box-shadow:0 1px 4px #0001;">
         <span>${userName}</span>
     </div>`;
-}
+} 

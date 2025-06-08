@@ -1,0 +1,208 @@
+.work-images-section {
+    margin: 20px 0 20px 0;
+    padding: 25px;
+    border: none;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.current-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.image-container {
+    position: relative;
+    border: none;
+    padding: 0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.image-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.image-container img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    background-color: #f0f0f0;
+}
+
+.image-container:hover img {
+    transform: scale(1.05);
+}
+
+.image-container button {
+    position: absolute;
+    bottom: 15px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.image-container:hover button {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.change-image {
+    right: 80px;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.change-image:hover {
+    background-color: #43A047;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.delete-image {
+    right: 15px;
+    background-color: #f44336;
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.delete-image:hover {
+    background-color: #E53935;
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+#uploadWorkImages {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px dashed #e0e0e0;
+    border-radius: 12px;
+    text-align: center;
+    background-color: #fafafa;
+    transition: all 0.3s ease;
+}
+
+#uploadWorkImages:hover {
+    border-color: #2196F3;
+    background-color: #f5f9ff;
+}
+
+#uploadWorkImages input[type="file"] {
+    display: none;
+}
+
+#uploadWorkImages button {
+    padding: 12px 25px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+#uploadWorkImages button:hover {
+    background-color: #1976D2;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Add loading animation */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    z-index: 0;
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2196F3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Notification System Styles */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transform: translateX(0);
+    min-width: 250px;
+    text-align: center;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.hide {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+/* Add space below the title 'صور أعمالي' in profile.php */
+.work-images-section h3 {
+    margin-bottom: 25px; /* Adjust this value as needed */
+} 

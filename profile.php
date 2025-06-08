@@ -9,14 +9,20 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+// Get the profile ID from URL parameter, default to logged-in user's ID
+$profile_id = isset($_GET['profile_id']) ? $_GET['profile_id'] : $_SESSION['user_id'];
+
 try {
     $stmt = $conn->prepare('SELECT * FROM user WHERE User_ID = :user_id');
-    $stmt->execute([':user_id' => $user_id]);
+    $stmt->execute([':user_id' => $profile_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error fetching user data: " . $e->getMessage());
 }
+
+// تعريف نوع المستخدم وتخزينه في الجلسة
+$user_type = $user['role'] ?? '';
+$_SESSION['user_type'] = $user_type; // Store user type in session
 
 // Safely fetch user data with default values if keys are missing
 $user_name = htmlspecialchars($user['name'] ?? 'غير معروف');
@@ -30,7 +36,7 @@ $user_country = htmlspecialchars($user['country'] ?? 'غير متوفر');
 // Fetch profile data from the `profile` table
 try {
     $stmt = $conn->prepare('SELECT p.*, u.email, u.role FROM profile p JOIN user u ON p.User_ID = u.User_ID WHERE p.User_ID = :user_id');
-    $stmt->execute([':user_id' => $user_id]);
+    $stmt->execute([':user_id' => $profile_id]);
     $profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Check if profile exists and handle based on role
@@ -64,7 +70,7 @@ $role = $profile['role'] ?? ($role ?? 'غير متوفر');
 
 // جلب حالة التوثيق
 $stmt = $conn->prepare('SELECT verification_status FROM user WHERE User_ID = :user_id');
-$stmt->execute([':user_id' => $user_id]);
+$stmt->execute([':user_id' => $profile_id]);
 $verification_status = $stmt->fetchColumn() ?: 'not_verified';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -78,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // معرفة نوع الحساب من قاعدة البيانات
     $stmt = $conn->prepare('SELECT u.role FROM user u WHERE u.User_ID = :user_id');
-    $stmt->execute([':user_id' => $user_id]);
+    $stmt->execute([':user_id' => $profile_id]);
     $userRoleRow = $stmt->fetch(PDO::FETCH_ASSOC);
     $realRole = $userRoleRow ? $userRoleRow['role'] : '';
 
@@ -99,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mkdir($uploadDir, 0777, true);
         }
         $fileExtension = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
-        $profile_photo_path = $uploadDir . $user_id . '_profile.' . $fileExtension;
+        $profile_photo_path = $uploadDir . $profile_id . '_profile.' . $fileExtension;
         move_uploaded_file($_FILES['profile_photo']['tmp_name'], $profile_photo_path);
     }
 
@@ -115,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':location' => $location,
                 ':experience' => $experience,
                 ':profile_photo' => $profile_photo_path,
-                ':user_id' => $user_id
+                ':user_id' => $profile_id
             ]);
         } else {
             $stmt = $conn->prepare('UPDATE profile SET first_name = :first_name, last_name = :last_name, bio = :bio, skills = :skills, location = :location, experience = :experience WHERE User_ID = :user_id');
@@ -126,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':skills' => $skills,
                 ':location' => $location,
                 ':experience' => $experience,
-                ':user_id' => $user_id
+                ':user_id' => $profile_id
             ]);
         }
 
@@ -227,9 +233,42 @@ include 'headerDash.php';
             <button type="submit" id="saveBtn" style="display:none;">حفظ التعديلات</button>
         </div>
     </form>
+
+<?php if ($user_type === 'job_seeker'): ?>
+<div class="work-images-section">
+    <h3>صور أعمالي</h3>
+    <div class="current-images">
+        <?php
+        for ($i = 1; $i <= 5; $i++) {
+            $image = $profile["work_image_$i"];
+            if ($image) {
+                echo "<div class='image-container'>";
+                echo "<img src='$image?t=' . time() . '' alt='صورة عمل $i' loading='lazy'>";
+                echo "<button class='change-image' data-image-number='$i'>تغيير</button>";
+                echo "<button class='delete-image' data-image-number='$i'>حذف</button>";
+                echo "</div>";
+            }
+        }
+        ?>
+    </div>
+    
+    <!-- DEBUG: Work Images Form Section Starts -->
+    <form id="uploadWorkImages" enctype="multipart/form-data">
+        <!-- DEBUG: Form content is being rendered -->
+        <input type="file" name="work_images[]" multiple accept="image/*" 
+               max="5" id="workImages" style="display: none;">
+        <button type="button" id="chooseImagesBtn" class="btn btn-secondary">اختر الصور</button>
+        <button type="submit">رفع الصور</button>
+    </form>
+    <!-- DEBUG: Work Images Form Section Ends -->
+</div>
+<?php endif; ?>
+
 </div>
 
-<script src="headerDash.js"></script>
+<div id="notification-container"></div>
+
+<script src="js/headerDash.js"></script>
 <script>
 // Add edit functionality for the form
 const editBtn = document.getElementById('editBtn');

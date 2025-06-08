@@ -55,7 +55,7 @@ $all_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit"><i class="fas fa-paper-plane"></i></button>
         </form>    </div>
 </div>
-<script src="messages.js"></script>
+<script src="js/messages.js"></script>
 <script src="js/messages-dropdown.js"></script>
 </body>
 </html>

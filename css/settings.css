@@ -1,130 +1,204 @@
-/* إعدادات صفحة الإعدادات بتصميم عصري وألوان هادئة متناسقة مع المواقع العربية (درجات بنفسجي/رمادي/أخضر باهت) */
+/* إعدادات صفحة الإعدادات بتصميم عصري وألوان متناسقة مع الموقع */
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #6366f1;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --border-color: #e5e7eb;
+    --bg-light: #f9fafb;
+    --bg-white: #ffffff;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --sidebar-accent2: #4f46e5;
+}
+
+/* إصلاح تضارب project.css مع headerDash.css بحيث تظهر عناصر السايدبار دائماً */
+.sidebar-drawer .menu-item {
+    color: #222 !important;
+    background: none !important;
+    opacity: 1 !important;
+}
+
+.sidebar-drawer .menu-item span, 
+.sidebar-drawer .menu-item i {
+    opacity: 1 !important;
+    color: inherit !important;
+}
+
+.sidebar-drawer .menu-item {
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-drawer .menu-item:hover, 
+.sidebar-drawer .menu-item.active {
+    background: #f5f7fa !important;
+    color: var(--sidebar-accent2) !important;
+}
+
 body {
-    background: linear-gradient(135deg, #f6f6fa 0%, #ececf3 100%);
+    background: var(--bg-light);
     font-family: 'Cairo', Tahoma, Arial, sans-serif;
     margin: 0;
     padding: 0;
+    color: var(--text-primary);
 }
+
 .settings-container {
-    max-width: 480px;
-    margin: 48px auto 32px auto;
-    background: #fff;
-    border-radius: 22px;
-    box-shadow: 0 8px 32px rgba(120, 120, 160, 0.10), 0 1.5px 8px rgba(120, 120, 160, 0.07);
-    padding: 38px 30px 28px 30px;
+    max-width: 600px;
+    margin: 2rem auto;
+    background: var(--bg-white);
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
     direction: rtl;
-    position: relative;
-    overflow: hidden;
 }
-.settings-container::before {
-    content: '';
-    position: absolute;
-    top: -60px;
-    left: -60px;
-    width: 160px;
-    height: 160px;
-    background: linear-gradient(120deg, #b993d6 60%, #8ca6db 100%);
-    opacity: 0.09;
-    border-radius: 50%;
-    z-index: 0;
-}
+
 .settings-container h2 {
     text-align: center;
-    color: #4b4453;
-    margin-bottom: 30px;
-    font-size: 2.1rem;
-    letter-spacing: 1px;
-    font-weight: bold;
-    position: relative;
-    z-index: 1;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    font-size: 1.875rem;
+    font-weight: 700;
 }
-.settings-form, .change-password-form {
+
+.settings-form, .email-settings-form, .change-password-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
+    gap: 1.5rem;
 }
+
 .setting-group {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 0.5rem;
 }
+
 .setting-group label {
-    color: #7d6fa3;
-    font-weight: 700;
-    margin-bottom: 2px;
-    font-size: 1.05rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 1rem;
 }
+
 .setting-group input[type="password"],
 .setting-group input[type="time"],
 .setting-group select {
-    padding: 9px 12px;
-    border: 1.5px solid #e0e0e6;
-    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
     font-size: 1rem;
-    background: #f7f8fd;
-    transition: border 0.2s, box-shadow 0.2s;
-    color: #222;
+    background: var(--bg-white);
+    transition: all 0.2s ease;
+    color: var(--text-primary);
 }
+
 .setting-group input:focus,
 .setting-group select:focus {
-    border: 1.5px solid #b993d6;
+    border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 0 2px #e0e0e6;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+
 .setting-group input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #7d6fa3;
-    margin-left: 8px;
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--primary-color);
+    margin-left: 0.5rem;
 }
+
+.setting-group span {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
 .save-btn {
-    background: linear-gradient(90deg, #b993d6 60%, #8ca6db 100%);
-    color: #fff;
+    background:#10b981;
+    color: white;
     border: none;
-    border-radius: 10px;
-    padding: 12px 0;
-    font-size: 1.13rem;
-    font-weight: bold;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(140,166,219,0.08);
+    transition: all 0.2s ease;
+    text-align: center;
 }
+
 .save-btn:hover {
-    background: linear-gradient(90deg, #8ca6db 60%, #b993d6 100%);
-    box-shadow: 0 4px 16px rgba(140,166,219,0.13);
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
+
 hr {
-    margin: 36px 0 20px 0;
+    margin: 2rem 0;
     border: none;
-    border-top: 1.5px solid #e5e7eb;
+    border-top: 1px solid var(--border-color);
 }
-.change-password-form h3 {
-    color: #4b4453;
-    margin-bottom: 13px;
-    font-size: 1.18rem;
-    text-align: right;
+
+.change-password-form h3,
+.email-settings-form h3 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
 }
+
 .msg {
-    color: #e11d48;
-    font-size: 1rem;
-    margin-top: 8px;
-    min-height: 22px;
-    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    text-align: center;
 }
-.setting-group span {
-    color: #64748b;
-    font-size: 0.98rem;
-    margin-top: 2px;
+
+.success-msg {
+    background-color: #ecfdf5;
+    color: var(--success-color);
+    border: 1px solid #d1fae5;
 }
-@media (max-width: 600px) {
+
+.error-msg {
+    background-color: #fef2f2;
+    color: var(--error-color);
+    border: 1px solid #fee2e2;
+}
+
+/* تحسينات للتصميم المتجاوب */
+@media (max-width: 640px) {
     .settings-container {
-        padding: 14px 3px 10px 3px;
+        margin: 1rem;
+        padding: 1.5rem;
     }
+
     .settings-container h2 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
     }
+
+    .setting-group input[type="password"],
+    .setting-group input[type="time"],
+    .setting-group select {
+        padding: 0.625rem 0.875rem;
+    }
+
+    .save-btn {
+        padding: 0.625rem 1.25rem;
+    }
+}
+
+/* تحسينات إضافية للتحميل والتفاعل */
+.save-btn:active {
+    transform: translateY(0);
+}
+
+.setting-group input[type="checkbox"]:checked {
+    background-color: var(--primary-color);
+}
+
+/* تحسين مظهر حقول الإدخال عند التعطيل */
+.setting-group input:disabled,
+.setting-group select:disabled {
+    background-color: var(--bg-light);
+    cursor: not-allowed;
+    opacity: 0.7;
 }

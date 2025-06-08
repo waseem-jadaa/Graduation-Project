@@ -54,10 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post-job'])) {
             // Redirect to clear POST data
             if ($status === 'pending_review') {
                 header('Location: job_post.php?pending_review=1');
+                exit(); // Exit immediately after redirect for pending review
             } else {
-                header('Location: job_post.php?success=1');
+                // This means $status is 'published' (or some other success status if any)
+                // Execute email sending logic *before* redirecting
+                error_log("Job status is: " . $status); // This log should now appear
+                if ($status === 'published') {
+                    require_once 'send_job_email_notifications.php';
+                    $job_id = $conn->lastInsertId();
+                    error_log("Attempting to send email for Job ID: " . $job_id . ", Title: " . $title . ", Location: " . $location); // This log should now appear
+                    sendJobEmailNotifications($job_id, $title, $location);
+                    error_log("sendJobEmailNotifications function called."); // This log should now appear
+                }
+                header('Location: job_post.php?success=1'); // Redirect after email is sent
+                exit(); // Exit immediately after redirect for published jobs
             }
-            exit();
         } catch (PDOException $e) {
             // Log and display specific database errors
             error_log("Database Error: " . $e->getMessage());

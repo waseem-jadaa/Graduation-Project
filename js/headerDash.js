@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       suggestionsBox.innerHTML = html;
       suggestionsBox.style.display = 'block';
-      // دعم التنقل بالأسهم والاختيار بالإنتر للاقترحات الذكية
+      // دعم التنقل بالأسهم والاختيار بالإنتر للاقتراحات الذكية
       suggestionItems = Array.from(suggestionsBox.querySelectorAll('.instant-suggestion'));
       let selectedIdx = -1;
       function updateSelection(newIdx) {
@@ -439,4 +439,4 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = 'main.php';
     });
   }
-});
+}); 

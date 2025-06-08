@@ -53,7 +53,10 @@ if (!isset($_SESSION['user_id'])) {
                         <p><strong>الموقع:</strong> ${professional.location}</p>
                         <p><strong>الخبرة:</strong> ${professional.experience} سنوات</p>
                         ${ratingHtml}
-                        <button class="request-btn">اطلبه الآن</button>
+                        <div class="professional-actions">
+                            <button class="request-btn">اطلبه الآن</button>
+                            <a href="professional_details.php?id=${professional.User_ID}" class="btn-details">التفاصيل</a>
+                        </div>
                     `;
                     // جلب التقييم من الخادم وإظهار واجهة تفاعلية للتقييم إذا كان المستخدم صاحب عمل
                     const ratingDiv = professionalBox.querySelector('.rating-stars');

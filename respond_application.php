@@ -28,6 +28,13 @@ if ($app['employer_ID'] != $_SESSION['user_id']) {
 // تحديث حالة الطلب
 $stmt = $conn->prepare('UPDATE application SET status = :status WHERE application_ID = :app_id');
 $stmt->execute([':status' => $status, ':app_id' => $application_id]);
+
+// إذا تم قبول الطلب، قم بتحديث حالة الوظيفة إلى "نفذت"
+if ($status === 'accepted') {
+    $stmt = $conn->prepare('UPDATE job SET status = "filled" WHERE job_ID = :job_id');
+    $stmt->execute([':job_id' => $app['job_ID']]);
+}
+
 // جلب اسم المهني (صاحب العمل الحالي)
 $stmt = $conn->prepare('SELECT name FROM user WHERE User_ID = :user_id');
 $stmt->execute([':user_id' => $_SESSION['user_id']]);

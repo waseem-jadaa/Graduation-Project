@@ -88,15 +88,17 @@
 }
 
 .btn-apply {
-    background-color: #27ae60;
+    background: #1abc5b;
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 1em;
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
-    margin-left: 10px;
+    margin-top: 10px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px #0001;
 }
 
 .btn-apply:hover {

@@ -45,9 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'], $_POST
             if ($action === 'accept') {
                 $conn->prepare('UPDATE user_verification SET status = "accepted", reviewed_at = NOW() WHERE id = :id')->execute([':id' => $id]);
                 $conn->prepare('UPDATE user SET verification_status = "verified", verification_note = NULL WHERE User_ID = :uid')->execute([':uid' => $uid]);
+                // Send internal notification to user (new logic for acceptance)
+                $notif_msg = 'تمت الموافقة على توثيق حسابك.';
+                // إضافة sender_id للأدمن (User_ID=25)
+                $conn->prepare('INSERT INTO notifications (user_id, sender_id, message, is_read, created_at) VALUES (:user_id, :sender_id, :message, 0, NOW())')->execute([
+                    ':user_id' => $uid,
+                    ':sender_id' => 25, // Assuming admin User_ID is 25
+                    ':message' => $notif_msg
+                ]);
             } elseif ($action === 'reject') {
                 $conn->prepare('UPDATE user_verification SET status = "rejected", reviewed_at = NOW(), note = :note WHERE id = :id')->execute([':id' => $id, ':note' => $note]);
-                $conn->prepare('UPDATE user SET verification_status = "rejected", verification_note = :note WHERE User_ID = :uid', [':note' => $note, ':uid' => $uid]); // Fixed typo in execute params
+                // Change verification_status to 'not_verified' to allow re-submission
+                $conn->prepare('UPDATE user SET verification_status = "not_verified", verification_note = :note WHERE User_ID = :uid')->execute([':note' => $note, ':uid' => $uid]);
                 // Send internal notification to user (existing logic)
                 $notif_msg = 'تم رفض طلب توثيق حسابك.';
                 if (!empty($note)) {
